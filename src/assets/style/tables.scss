@@ -1,0 +1,37 @@
+@import "bootstrap-theme.scss";
+
+//Vue good table
+.vgt-wrap {
+    td {
+        font-weight: 500;
+        font-size: 12pt;
+    }
+
+    tr[class*=bg-] {
+        th {
+            background: inherit;
+        }
+
+        th,
+        td {
+            color: inherit;
+            border-color: transparent rgba(0, 0, 0, 0.1);
+        }
+    }
+
+    .vgt-input,::placeholder {
+        opacity: 1 !important;
+    }
+
+    .vgt-global-search__input .input__icon {
+        .magnifying-glass {
+            margin-top: 9px;
+            margin-left: 9px;
+            border-color: #bbb;
+
+            &:before {
+                background: #bbb;
+            }
+        }
+    }
+}

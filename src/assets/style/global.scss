@@ -1,0 +1,31 @@
+@import "bootstrap-theme";
+@import '~bootstrap/scss/bootstrap';
+@import '~bootstrap-vue/dist/bootstrap-vue.css';
+
+@import "buttons.scss";
+@import "chrome.scss";
+@import "cursors.scss";
+@import "context-menu.scss";
+@import "dropdown-menu.scss";
+@import "inputs.scss";
+@import "input-groups.scss";
+@import "list-group.scss";
+@import "modals.scss";
+@import "navbar.scss";
+@import "panels.scss";
+@import "tables.scss";
+@import "tabs.scss";
+@import "texts.scss";
+@import "toasts.scss";
+
+.disabled,
+[disabled] {
+    pointer-events: none !important;
+    opacity: 0.5 !important;
+}
+
+@media(max-width: 576px) {
+    .hide-sm {
+        display: none !important;
+    }
+}

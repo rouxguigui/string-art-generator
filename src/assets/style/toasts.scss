@@ -1,0 +1,26 @@
+.b-toast {
+    &.b-toast-simple {
+        float: right;
+
+        .toast {
+            display: inline-block;
+            border: none;
+            width: auto;
+
+            .toast-header {
+                background: #333;
+                color: #eee;
+                border: none;
+            }
+
+            .close {
+                color: #fff;
+                text-shadow: none;
+            }
+
+            .toast-body {
+                display: none;
+            }
+        }
+    }
+}

@@ -1,0 +1,201 @@
+#app-container,
+.modal {
+    .list-group {
+        min-width: 300px;
+        width: 300px;
+        border: none;
+        text-align: left;
+        user-select: none;
+
+        &.right-bordered {
+            border-right: 1px solid #ccc;
+            box-shadow: 1px 0 0 rgba(255, 255, 255, 1);
+        }
+
+        &.left-bordered {
+            border-left: 1px solid #ccc;
+            box-shadow: -1px 0 0 rgba(255, 255, 255, 1);
+        }
+
+        &.bordered {
+            border: 2px solid #ffffff;
+            -webkit-box-shadow: 0 0 0 1px white;
+            box-shadow: inset 0 5px 10px rgba(0, 0, 0, 0.1), 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        .list-group-item {
+            border: none;
+            background: linear-gradient(to bottom, #fafafa 0%, #f0f0f0 100%);
+            border-radius: 0;
+            cursor: default;
+            margin: 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+
+            &:last-child {
+                border-bottom: none;
+            }
+
+            &:hover {
+                background: linear-gradient(to bottom, #e4f7ff 10px, #cbe1fb 100%);
+            }
+
+            &.active {
+                color: #fff;
+                background: linear-gradient(to bottom, #11a4e1 10px, #1682de 100%);
+            }
+
+            .name {
+                font-weight: 600;
+            }
+
+            .description {
+                font-size: 10pt;
+                font-weight: 500;
+            }
+
+            .price {
+                float: right;
+            }
+        }
+
+        &.compact {
+            .list-group-item {
+                padding: 0.4rem 0.8rem;
+            }
+        }
+
+        $grid-margin: 8px;
+
+        &.grid-view {
+            width: 500px;
+            min-width: 500px;
+            display: block;
+            background: #ddd;
+            padding: 0 0 $grid-margin $grid-margin;
+
+            .list-group-item {
+                display: inline-block;
+                max-width: 300px;
+                width: calc(50% - #{$grid-margin});
+                margin: $grid-margin $grid-margin 0 0;
+                border-radius: 10px;
+                vertical-align: top;
+                height: 140px;
+                padding: 0;
+                text-align: center;
+
+                :not(.list-icon).fas {
+                    position: absolute;
+                    top: 5px;
+                    right: 5px;
+                }
+
+                .fas.list-icon {
+                    display: block;
+                    font-size: 20px;
+                }
+
+                img {
+                    pointer-events: none;
+                    margin: 0 auto 5px;
+                    height: 103px;
+                    width: 100%;
+                    object-fit: cover;
+                    border-radius: 5px 5px 0 0;
+                }
+
+                .name {
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+
+                .price {
+                    position: absolute;
+                    top: 5px;
+                    right: 0;
+                    padding: 2px 4px;
+                    color: white;
+                    background-color: rgba(0, 0, 0, 0.6);
+                }
+            }
+
+            &.grid-view-sm {
+                .list-group-item {
+                    max-width: 150px;
+                }
+            }
+        }
+
+        $explorer-margin: 10px;
+
+        &.explorer-view {
+            width: 400px;
+            min-width: 400px;
+            max-width: 100%;
+            display: block;
+            background: transparent;
+            padding: 0 0 $explorer-margin $explorer-margin;
+
+            .list-group-item {
+                display: inline-block;
+                max-width: 300px;
+                width: calc(50% - #{$explorer-margin});
+                margin: $explorer-margin $explorer-margin 0 0;
+                border: none;
+                background: none;
+                border-radius: 0;
+                vertical-align: top;
+                height: 140px;
+                padding: 0;
+                text-align: center;
+
+                :not(.list-icon).fas {
+                    position: absolute;
+                    top: 5px;
+                    right: 5px;
+                }
+
+                .fas.list-icon {
+                    display: block;
+                    font-size: 40px;
+                    margin: 10px;
+                    opacity: 0.5;
+                }
+
+                img {
+                    pointer-events: none;
+                    margin: 0 auto 5px;
+                    height: 103px;
+                    width: calc(100% - 30px);
+                    object-fit: cover;
+                    border-radius: 5px;
+                }
+
+                .name {
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+
+                .price {
+                    position: absolute;
+                    top: -7px;
+                    right: 0;
+                    padding: 2px 4px;
+                    color: white;
+                    background-color: rgba(0, 0, 0, 0.6);
+                    border-radius: 3px;
+                }
+
+                &.active {
+                    .name {
+                        border-radius: 15px;
+                        background: linear-gradient(to bottom, #11a4e1 10px, #1682de 100%);
+                    }
+                }
+            }
+        }
+    }
+}

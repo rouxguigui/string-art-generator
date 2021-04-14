@@ -1,0 +1,43 @@
+/*	Chrome components	*/
+input[type="range"]::-webkit-slider-thumb {
+	-webkit-appearance: none;
+
+	width: 7px;
+	height: 14px;
+
+	background: #ffffff;
+}
+
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	width: 12px !important;
+	height: 1px !important;
+	opacity: 0.3;
+	margin: 0;
+}
+
+input:focus::-webkit-inner-spin-button {
+	opacity: 0.5;
+}
+
+::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+}
+
+::-webkit-scrollbar-track-piece {
+    margin: auto;
+    background: #eee;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:horizontal,
+::-webkit-scrollbar-thumb:vertical {
+    background: #aaa;
+    border: none;
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:vertical:hover {
+    background-color: #777;
+}

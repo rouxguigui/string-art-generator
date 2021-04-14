@@ -1,0 +1,120 @@
+@import "bootstrap-theme.scss";
+
+.swal-custom-image {
+    img {
+        max-width: 50% !important;
+    }
+}
+
+.swal-modal {
+    border-radius: 10px;
+    background: linear-gradient(to bottom, #ffffff 50%, #ededed 100%);
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.25);
+
+    .swal-title {
+        font-weight: 500;
+    }
+}
+
+body {
+    .modal-dialog {
+
+    }
+    .modal-content {
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        background: transparent;
+
+        .modal-header {
+            margin: 0 15px;
+            border: none;
+            border-top-left-radius: inherit;
+            border-top-right-radius: inherit;
+
+            padding: 0.125em;
+            background: linear-gradient(to bottom, #315279 0%, #2a65a5 100%);
+            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.25);
+
+            .modal-title {
+                font-family: $theme-font;
+                font-size: 13pt;
+                letter-spacing: 1px;
+                font-weight: 400;
+                text-align: center;
+                display: block;
+                width: 100%;
+            }
+
+            .close {
+                text-shadow: none;
+                padding: 0;
+                margin: -5px;
+                width: 32px;
+                height: 30px;
+                line-height: 18px;
+                text-align: center;
+                display: inline-block;
+            }
+        }
+
+        .modal-body {
+            border-radius: inherit;
+            background-color: #2d2d2d;
+            //padding: 5px;
+            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.25);
+            z-index: 1;
+        }
+
+        .modal-footer {
+            margin: 0 50px;
+            border: none;
+            padding: 0.5em 0.75em;
+            border-bottom-left-radius: inherit;
+            border-bottom-right-radius: inherit;
+            backdrop-filter: saturate(180%) blur(15px);
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: inset 0 -2px 5px rgba(255, 255, 255, 0.3), 0 3px 5px rgba(0, 0, 0, 0.25);
+
+            &.centered {
+                text-align: center;
+                display: block;
+            }
+
+            .btn {
+                min-width: 80px;
+
+                &.btn-primary {
+                    color: #777;
+                    background: linear-gradient(to bottom, #ffffff 0%, #ededed 100%);
+
+                    &:hover {
+                        color: white;
+                        background: linear-gradient(to bottom, #7ee318 0%, #26bc4e 100%);
+                    }
+
+                    &:active {
+                        color: white;
+                        background: linear-gradient(to bottom, #b8e324 0%, #26bc4d 100%);
+                    }
+                }
+
+                &.btn-secondary {
+                    background: transparent !important;
+                    color: rgba(255, 255, 255, 0.75);
+                    border: none !important;
+                    border-radius: 0;
+                    margin: 5px;
+                    padding: 0.125em 0.25em;
+                    box-shadow: none !important;
+                    transform: none !important;
+
+                    &:active,
+                    &:hover {
+                        color: #fff;
+                    }
+                }
+            }
+        }
+    }
+}
