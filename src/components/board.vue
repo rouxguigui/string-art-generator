@@ -107,17 +107,24 @@ export default {
       this.canvas.context.strokeStyle = layer.color;
       this.canvas.context.lineWidth = 1;
 
-      let startNail = index * this.board.nails / (this.layers.length - 1) / 2;
+      let startNail = - index * this.board.nails / (this.layers.length - 1) / 2;
       this.canvas.context.beginPath();
-      this.canvas.context.moveTo(this.nails[startNail].x, this.nails[startNail].y);
       for (let i = 0; i < this.board.nails / 2; i++) {
-        let nail = this.nails[startNail + i];
+        let nail = this.nails[this.modulo((startNail + i), this.board.nails)];
         this.canvas.context.moveTo(nail.x, nail.y);
 
-        nail = this.nails[(startNail + i * 2 + this.board.nails / 2) % this.board.nails];
+        nail = this.nails[this.modulo(startNail + i * 2 + this.board.nails / 2, this.board.nails)];
         this.canvas.context.lineTo(nail.x, nail.y);
       }
       this.canvas.context.stroke();
+    },
+    modulo: function (x, y) {
+      const mod = Number(x) % Number(y);
+      if (mod < 0) {
+        return y + mod;
+      } else {
+        return mod;
+      }
     }
   },
   watch: {
