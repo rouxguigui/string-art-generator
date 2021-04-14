@@ -11,5 +11,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+.main-page {
+  width: calc(100vw - 270px);
+  max-height: 100vh;
+  overflow: scroll;
+}
 </style>

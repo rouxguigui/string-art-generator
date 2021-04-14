@@ -30,7 +30,6 @@ export default {
   }
 
   body {
-    overflow-y: auto;
     color: white;
     font-family: $theme-font;
   }

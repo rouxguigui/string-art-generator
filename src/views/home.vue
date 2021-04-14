@@ -11,7 +11,7 @@
               <b-input type="text" v-model="layerSelected.name"></b-input>
             </b-input-group>
           </b-form-group>
-          <b-form-group label="Couleur">
+          <b-form-group>
             <b-input-group>
               <b-input-group-text>Couleur</b-input-group-text>
               <b-input type="color" v-model="layerSelected.color"></b-input>
@@ -101,13 +101,13 @@ export default {
   data() {
     return {
       board: {
-        width: 55,
-        height: 55,
+        width: 55.88,
+        height: 55.88,
         nails: 320,
         radius: 25,
         shape: `circle`
       },
-      zoom: 1,
+      zoom: 0.5,
       layerSelected: false,
       layers: [],
       defaultPalette: [ `#051f24`, `#1d758a`, `#036074`, `#5b93a3`, `#3587a3`, `#3aa1aa`, `#93cccc`, `#8eb1af`, `#88babf`
