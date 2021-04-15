@@ -1,4 +1,4 @@
-# String Art Generator
+# String Art Generator, coming soon
 
 ## Project setup
 ```
