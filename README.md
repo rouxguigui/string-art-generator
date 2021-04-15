@@ -1,4 +1,4 @@
-# space-agency
+# String Art Generator
 
 ## Project setup
 ```

@@ -1,6 +1,6 @@
 <template>
   <div class="board">
-    <canvas id="board-canvas" :width="board.width * scale" :height="board.height * scale"
+    <canvas id="board-canvas" :width="board.width * resolution" :height="board.height * resolution"
             :style="{transform: 'scale(' + zoom + ')'}"></canvas>
   </div>
 </template>
@@ -12,12 +12,12 @@ export default {
   name: 'board',
   props: {
     zoom: {type: Number},
-    scale: {type: Number, default: 50},
     board: {type: Object},
     layers: {type: Array}
   },
   data() {
     return {
+      refreshRequired: true,
       canvas: null,
       nails: []
     }
@@ -26,25 +26,39 @@ export default {
     this.canvas = new CanvasHelper(`board-canvas`);
     this.redraw();
   },
+  created() {
+    this.updateLoop();
+  },
   computed: {
+    resolution() {
+      return this.board.resolution;
+    },
     centerX() {
-      return this.board.width * this.scale / 2;
+      return this.board.width * this.resolution / 2;
     },
     centerY() {
-      return this.board.width * this.scale / 2;
+      return this.board.width * this.resolution / 2;
     }
   },
   methods: {
+    updateLoop() {
+      window.requestAnimationFrame(() => {
+        if (this.refreshRequired) {
+          this.redraw();
+        }
+        this.updateLoop();
+      });
+    },
     generateNails() {
       this.nails = [];
       for (let i = 0; i < this.board.nails; i++) {
         let angle = 90 - i * 360 / this.board.nails;// Get current angle
         angle *= Math.PI / 180;// Convert to rad
         this.nails.push({
-          x: this.centerX + this.board.radius * this.scale * Math.cos(angle),
-          y: this.centerY + this.board.radius * this.scale * Math.sin(angle),
-          textX: this.centerX + 1.05 * this.board.radius * this.scale * Math.cos(angle),
-          textY: this.centerY + 1.05 * this.board.radius * this.scale * Math.sin(angle)
+          x: this.centerX + this.board.radius * this.resolution * Math.cos(angle),
+          y: this.centerY + this.board.radius * this.resolution * Math.sin(angle),
+          textX: this.centerX + 1.05 * this.board.radius * this.resolution * Math.cos(angle),
+          textY: this.centerY + 1.05 * this.board.radius * this.resolution * Math.sin(angle)
         });
       }
     },
@@ -53,6 +67,7 @@ export default {
       this.generateNails();
       this.drawLayers();
       this.drawNails();
+      this.refreshRequired = false;
     },
     drawNails() {
       this.canvas.context.strokeStyle = `#bbb`;
@@ -60,20 +75,20 @@ export default {
       // Draw cross vertically and horizontally
       // this.canvas.context.beginPath();
       // this.canvas.context.moveTo(0, this.centerY);
-      // this.canvas.context.lineTo(this.board.width * this.scale, this.centerY);
+      // this.canvas.context.lineTo(this.board.width * this.resolution, this.centerY);
       // this.canvas.context.stroke();
       // this.canvas.context.beginPath();
       // this.canvas.context.moveTo(this.centerX, 0);
-      // this.canvas.context.lineTo(this.centerX, this.board.height * this.scale);
+      // this.canvas.context.lineTo(this.centerX, this.board.height * this.resolution);
       // this.canvas.context.stroke();
       // Draw cross diagonal
       this.canvas.context.beginPath();
       this.canvas.context.moveTo(0, 0);
-      this.canvas.context.lineTo(this.board.width * this.scale, this.board.height * this.scale);
+      this.canvas.context.lineTo(this.board.width * this.resolution, this.board.height * this.resolution);
       this.canvas.context.stroke();
       this.canvas.context.beginPath();
-      this.canvas.context.moveTo(0, this.board.height * this.scale);
-      this.canvas.context.lineTo(this.board.width * this.scale, 0);
+      this.canvas.context.moveTo(0, this.board.height * this.resolution);
+      this.canvas.context.lineTo(this.board.width * this.resolution, 0);
       this.canvas.context.stroke();
 
       // this.canvas.context.fillStyle = `#000`;
@@ -81,11 +96,11 @@ export default {
       // this.canvas.context.arc(this.centerX, this.centerY, 5, 0, Math.PI * 2);
       // this.canvas.context.fill();
 
-      this.canvas.context.fillStyle = `#bbb`;
+      this.canvas.context.fillStyle = `#aaa`;
       // let index = 0;
       for (let nail of this.nails) {
         this.canvas.context.beginPath();
-        this.canvas.context.arc(nail.x, nail.y, 6, 0, Math.PI * 2);
+        this.canvas.context.arc(nail.x, nail.y, 3, 0, Math.PI * 2);
         this.canvas.context.fill();
         // this.canvas.context.strokeText(index, nail.textX + 5, nail.textY + 5);
         // index += 1;
@@ -93,7 +108,6 @@ export default {
     },
     drawLayers() {
       let index = 0;
-      // this.drawLayer(0, this.layers[0]);
       for (let layer of this.layers) {
         this.drawLayer(index, layer);
         index++;
@@ -131,13 +145,13 @@ export default {
     board: {
       deep: true,
       handler() {
-        this.redraw();
+        this.refreshRequired = true;
       }
     },
     layers: {
       deep: true,
       handler() {
-        this.redraw();
+        this.refreshRequired = true;
       }
     }
   }
@@ -149,6 +163,12 @@ export default {
   canvas {
     margin: 30px;
     background-color: white;
+  }
+
+  @media(max-width: 576px) {
+    canvas {
+      margin: 10px 60px 10px 10px;
+    }
   }
 }
 </style>
