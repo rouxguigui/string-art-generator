@@ -5,10 +5,14 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
+        project: null
     },
     getters: {
     },
     mutations: {
+        setProject(state, project) {
+            state.project = project;
+        }
     },
     actions: {
         // logout({commit, dispatch}) {

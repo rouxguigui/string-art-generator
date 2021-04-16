@@ -1,157 +1,51 @@
 <template>
-    <div id="home">
+    <div id="home" v-if="project">
         <b-navbar class="main-menu" variant="dark" fixed="top">
             <b-dropdown text="Menu" no-caret>
-                <b-dropdown-item>Nouveau</b-dropdown-item>
-                <b-dropdown-item>Ouvrir</b-dropdown-item>
-                <b-dropdown-item>Enregistrer</b-dropdown-item>
+                <b-dropdown-item @click="newProject">Nouveau</b-dropdown-item>
+                <b-dropdown-item @click="project.load()">Ouvrir</b-dropdown-item>
+                <b-dropdown-divider></b-dropdown-divider>
+                <b-dropdown-item @click="project.save()">Enregistrer</b-dropdown-item>
             </b-dropdown>
             <b-btn variant="transparent" @click="setZoom(-.1)"><i class="far fa-search-minus"></i></b-btn>
             <div class="zoom">{{Math.round(zoom * 100)}}%</div>
             <b-btn variant="transparent" @click="setZoom(.1)"><i class="far fa-search-plus"></i></b-btn>
             <div class="separator"></div>
-            <b-input class="project-name" v-model="projectName"></b-input>
+            <b-input class="project-name" v-model="project.name"></b-input>
             <b-navbar-brand class="ml-auto">String Art Generator</b-navbar-brand>
         </b-navbar>
-        <div class="properties-panel" :class="{'extended' : menuExtended}">
-            <b-btn size="sm" v-if="menuExtended" class="float-right" variant="transparent"
-                   @click="menuExtended = false"><i
-                    class="fas fa-arrow-right"></i></b-btn>
-            <div id="properties" class="properties-group">
-                <h4>Propriétés</h4>
-                <div class="content" v-if="layerSelected">
-                    <b-form-group class="property">
-                        <b-input-group>
-                            <b-input-group-text>Nom</b-input-group-text>
-                            <b-input type="text" v-model="layerSelected.name"></b-input>
-                        </b-input-group>
-                    </b-form-group>
-                    <b-form-group class="property">
-                        <b-input-group>
-                            <b-input-group-text>Couleur</b-input-group-text>
-                            <b-input type="text" maxlength="7" v-model="layerSelected.color"></b-input>
-                            <b-input type="color" class="ml-1" v-model="layerSelected.color"></b-input>
-                        </b-input-group>
-                    </b-form-group>
-                </div>
-                <div class="content" v-else>
-                    <b-form-group class="property">
-                        <b-input-group>
-                            <b-input-group-text>Forme de base</b-input-group-text>
-                            <b-select v-model="board.shape">
-                                <option value="circle">Cercle</option>
-                            </b-select>
-                        </b-input-group>
-                    </b-form-group>
-                    <b-form-group class="property">
-                        <b-input-group>
-                            <b-input-group-text>Rayon (cm)</b-input-group-text>
-                            <b-input type="number" min="1" max="150" step="1" v-model.number="board.radius"></b-input>
-                        </b-input-group>
-                    </b-form-group>
-                    <b-form-group class="property">
-                        <b-input-group>
-                            <b-input-group-text>Clous</b-input-group-text>
-                            <b-select v-model.number="board.nails">
-                                <option v-for="i in 999" :value="i + 1" :key="'nail-' + i">{{ i + 1 }}</option>
-                            </b-select>
-                        </b-input-group>
-                    </b-form-group>
-                    <b-form-group class="property">
-                        <b-input-group>
-                            <b-input-group-text>Taille</b-input-group-text>
-                            <b-input type="number" min="1" max="150" step="1" v-model.number="board.width"></b-input>
-                            <b-input-group-text class="mx-2">x</b-input-group-text>
-                            <b-input type="number" min="1" max="150" step="1" v-model.number="board.height"></b-input>
-                        </b-input-group>
-                    </b-form-group>
-                </div>
-            </div>
-
-            <div id="layers" class="properties-group">
-                <h4>Couches</h4>
-                <div class="content">
-                    <div class="layer" @click="layerSelected = null" :class="{ 'active': layerSelected === null }">
-                        <div class="visibility"></div>
-                        <div class="name">
-                            Board
-                        </div>
-                    </div>
-                    <div class="layer" v-for="(layer, index) in layers" :key="'index-' + index"
-                         @click="layerSelected = layer"
-                         :class="{ 'active': layerSelected === layer }">
-                        <div class="visibility" @click.stop="layer.visible = !layer.visible">
-                            <i class="far fa-eye fa-fw" v-if="layer.visible"></i>
-                            <i class="far fa-eye-slash fa-fw" v-else></i>
-                        </div>
-                        <div class="name">
-                            {{ layer.name }}
-                        </div>
-                        <div class="color">
-                            <i :style="{color: layer.color}">⬤</i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mobile-controls d-flex flex-column h-100 justify-content-end my-2">
-                <b-btn size="sm" block variant="outline-white" @click="zoom > 0.1 ? zoom += 0.1 : ''"><i
-                        class="far fa-plus"></i></b-btn>
-                <b-btn size="sm" block variant="outline-white" @click="zoom < 3 ? zoom -= 0.1 : ''"><i
-                        class="far fa-minus"></i>
-                </b-btn>
-                <b-btn size="sm" block variant="outline-white" @click="menuExtended = true"><i
-                        class="far fa-arrow-left"></i>
-                </b-btn>
-            </div>
-        </div>
+        <properties-panel v-model="layerSelected"></properties-panel>
         <main-page>
-            <board :layers="layers" :zoom="zoom" :board="board"></board>
+            <board :zoom="zoom"></board>
         </main-page>
     </div>
 </template>
 
 <script>
 import Board from "@/components/board.vue";
+import PropertiesPanel from "@/components/properties-panel.vue";
+import Project from "@/helpers/Project.js";
 import MainPage from "../components/main-page";
 
 export default {
     name: "home",
-    components: {Board, MainPage},
+    components: {PropertiesPanel, Board, MainPage},
     data() {
         return {
-            projectName: `My project`,
-            board: {
-                width: 55.88,
-                height: 55.88,
-                nails: 320,
-                radius: 25,
-                resolution: 25,
-                shape: `circle`
-            },
             zoom: 1,
             layerSelected: false,
-            layers: [],
             menuExtended: false,
-            defaultPalette: [`#051f24`, `#1d758a`, `#036074`, `#5b93a3`, `#3587a3`, `#3aa1aa`, `#93cccc`, `#8eb1af`, `#88babf`
-            ]
         }
     },
     mounted() {
-        if (window.innerWidth < 576) {
-            this.resolution = 10;
-        }
-        for (let i = 0; i < 2; i++) {
-            this.addLayer();
-        }
+        this.newProject();
     },
     methods: {
-        addLayer() {
-            this.layers.push({
-                name: `Fil ${this.layers.length}`,
-                color: this.defaultPalette[this.layers.length % this.defaultPalette.length],
-                visible: true
-            });
+        newProject() {
+            this.project = new Project();
+            for (let i = 0; i < 9; i++) {
+                this.project.addLayer();
+            }
         },
         setZoom(delta) {
             this.zoom = Math.max(Math.min(this.zoom + delta, 3), 0.1);
