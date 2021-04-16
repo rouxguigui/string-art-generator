@@ -4,7 +4,8 @@ import store from './store'
 
 import { BootstrapVue } from 'bootstrap-vue'
 import '@fortawesome/fontawesome-pro/scss/fontawesome.scss'
-import '@fortawesome/fontawesome-pro/scss/solid.scss'
+import '@fortawesome/fontawesome-pro/scss/regular.scss'
+import '@fortawesome/fontawesome-pro/scss/light.scss'
 
 
 Vue.config.productionTip = false;

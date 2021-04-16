@@ -24,7 +24,7 @@
 
             &:hover {
                 color: #f5f5f5;
-                background: linear-gradient(to bottom, #7fe318 0%, #26bc4d 100%);
+                background: #3096cf;
             }
         }
 
@@ -37,6 +37,8 @@
             border-bottom: 1px solid rgba(0, 0, 0, 0.1);
         }
 
+        .fal,
+        .far,
         .fas {
             display: inline-block;
             position: relative;

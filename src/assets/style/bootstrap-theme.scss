@@ -1,11 +1,11 @@
-$body-bg: #333;
+$body-bg: #262d30;
 $body-color: #444;
-$theme-font: 'Square721 BT', 'segoe ui', sans-serif;
+$theme-font: 'Source Sans Pro', 'segoe ui', sans-serif;
 
-$menu-height: 57px;
+$menu-height: 40px;
 
 $theme-colors: (
-    "primary": #2684f0,
+    "primary": #3096cf,
     "secondary": #21ca9a,
     "info": #3cb1d5,
     "warning": #f17e42,
@@ -24,41 +24,8 @@ $theme-colors: (
     "light": #f0f0f0
 );
 
-$gradient-primary: linear-gradient(to bottom, #11a4e1 10px, #1682de 100%);
-$gradient-secondary: linear-gradient(to bottom, #ffffff 0%, #ededed 100%);
-$gradient-success: linear-gradient(to bottom, #7ee318 0%, #26bc4e 100%);
-$gradient-warning: linear-gradient(to top, #ce6624 0%, #f7920a 100%);
-$gradient-danger: linear-gradient(to bottom, #EF3B35 0%, #BB382B 100%);
-$gradient-info: linear-gradient(to bottom, #ffeb84 0%, #dfbb6f 100%);
-
 $input-btn-box-shadow: none;
 $custom-select-focus-box-shadow: none;
 //$input-btn-focus-box-shadow: none;
 $btn-active-box-shadow: none;
 //$input-btn-border-width: 2px;
-
-
-.bg-primary {
-    color: #fff;
-    background: $gradient-primary;
-}
-.bg-secondary {
-    color: #fff;
-    background: $gradient-secondary;
-}
-.bg-info {
-    color: #fff;
-    background: $gradient-info;
-}
-.bg-success {
-    color: #fff;
-    background: $gradient-success;
-}
-.bg-warning {
-    color: #fff;
-    background: $gradient-warning;
-}
-.bg-danger {
-    color: #fff;
-    background: $gradient-danger;
-}
