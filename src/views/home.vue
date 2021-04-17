@@ -108,7 +108,33 @@ export default {
                 this.previousProjects = projects;
             }
         },
-        newProject() {
+        async askSaveConfirmationBefore() {
+            if (this.project) {
+                const result = await swal.fire({
+                    title: "Enregistrer avant ?",
+                    text: `Voulez-vous enregistrer ${this.project.name} avant ?`,
+                    showCancelButton: true,
+                    showDenyButton: true,
+                    showCloseButton: true,
+                    cancelButtonText: `Annuler`,
+                    denyButtonText: `Ne pas enregistrer`,
+                    confirmButtonText: `Enregistrer`
+                });
+                if (result.isConfirmed) {
+                    await this.saveOrSaveAs();
+                    return true;
+                } else if (result.isDismissed) {
+                    return false;
+                }
+            } else {
+                return true;
+            }
+        },
+        async newProject() {
+            let result = await this.askSaveConfirmationBefore();
+            if (result === false) {
+                return;
+            }
             this.project = new Project();
             for (let i = 0; i < 9; i++) {
                 this.project.addLayer();
@@ -123,7 +149,9 @@ export default {
                 title: "Nom du projet",
                 input: "text",
                 inputValue: this.project.name,
-                showCancelButton: true
+                showCancelButton: true,
+                showCloseButton: true,
+                cancelButtonText: `Annuler`
             });
             if (newName) {
                 this.project.saveAs(newName);
@@ -133,7 +161,7 @@ export default {
                 });
             }
         },
-        saveOrSaveAs() {
+        async saveOrSaveAs() {
             if (this.project.saved) {
                 this.project.save();
                 this.$bvToast.toast(`${this.project.name} a été enregistré avec succès`, {
@@ -141,10 +169,14 @@ export default {
                     autoHideDelay: 5000
                 });
             } else {
-                this.saveAs();
+                await this.saveAs();
             }
         },
-        closeProject() {
+        async closeProject() {
+            let result = await this.askSaveConfirmationBefore();
+            if (result === false) {
+                return;
+            }
             this.project = null;
             this.loadRecentProjects();
         },
@@ -189,7 +221,7 @@ export default {
 
                 &:hover {
                     color: white;
-                    background-color: rgba(white, 0.15);
+                    background-color: #3096cf;
                 }
             }
         }
@@ -225,7 +257,7 @@ export default {
 
             &:hover {
                 color: white;
-                background-color: rgba(white, 0.15);
+                background-color: #3096cf;
             }
         }
     }

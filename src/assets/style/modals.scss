@@ -3,7 +3,7 @@
 .swal2-modal {
     border-radius: 4px;
     padding: 0;
-    color: white;
+    color: #b6c2cb;
     background-color: #374145;
 
     .swal2-header {
@@ -19,10 +19,23 @@
             font-size: 12pt;
             letter-spacing: 1px;
         }
+        .swal2-close {
+            height: 39px;
+            width: 39px;
+            font-size: 20pt;
+        }
+    }
+
+    .swal2-content {
+        color: inherit;
+
+        .swal2-html-container {
+            padding: 15px 10px 0;
+        }
     }
 
     .swal2-actions {
-        padding-bottom: 10px;
+        padding: 0 10px 10px 10px;
         text-align: right;
         display: block;
 
@@ -33,6 +46,10 @@
             &.swal2-cancel {
                 background-color: transparent;
                 color: #aaa;
+            }
+
+            &.swal2-deny {
+                float: right;
             }
 
             &.swal2-confirm {

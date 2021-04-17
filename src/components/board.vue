@@ -192,7 +192,7 @@ export default {
 <style lang="scss" scoped>
 .board {
     canvas {
-        margin: 60px 30px 30px;
+        margin: 70px 30px 30px;
         background-color: white;
     }
 

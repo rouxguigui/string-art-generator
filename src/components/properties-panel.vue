@@ -72,6 +72,7 @@
                         <b-input-group>
                             <b-input-group-text>Angle départ</b-input-group-text>
                             <b-input type="number" min="0" max="360" step="15" v-model.number="board.startingAngle"></b-input>
+                            <b-input-group-text class="pl-2">°</b-input-group-text>
                         </b-input-group>
                     </b-form-group>
                     <b-form-group class="property">
@@ -138,9 +139,7 @@
             <div class="content">
                 <div class="layer" @click="layerSelected = null" :class="{ 'active': !layerSelected }">
                     <div class="visibility"></div>
-                    <div class="name">
-                        Board
-                    </div>
+                    <div class="name">Plateau</div>
                 </div>
                 <draggable v-model="layers" ghost-class="list-item-ghost" drag-class="list-item-drag" animation="150">
                     <div class="layer" v-for="layer in layers" :key="layer.id"
