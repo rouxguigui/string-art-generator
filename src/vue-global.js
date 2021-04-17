@@ -45,6 +45,9 @@ Vue.mixin({
         },
         isMobile() {
             return window.innerWidth < 576;
+        },
+        isMobileLandscape() {
+            return window.innerHeight < 576;
         }
     }
 });

@@ -141,10 +141,13 @@
                     <div class="visibility"></div>
                     <div class="name">Plateau</div>
                 </div>
-                <draggable v-model="layers" ghost-class="list-item-ghost" drag-class="list-item-drag" animation="150">
+                <draggable v-model="layers" :handle="isMobile || isMobileLandscape ? '.handle': null" ghost-class="list-item-ghost" drag-class="list-item-drag" animation="150">
                     <div class="layer" v-for="layer in layers" :key="layer.id"
                          @click="layerSelected = layer"
                          :class="{ 'active': layerSelected === layer }">
+                        <div v-if="isMobile || isMobileLandscape" class="handle">
+                            <i class="far fa-bars mr-2"></i>
+                        </div>
                         <div class="visibility" @click.stop="layer.visible = !layer.visible">
                             <i class="far fa-eye fa-fw" v-if="layer.visible"></i>
                             <i class="far fa-eye-slash fa-fw" v-else></i>

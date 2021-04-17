@@ -1,7 +1,7 @@
 <template>
     <div id="home">
         <b-navbar class="main-menu" variant="dark" fixed="top">
-            <b-btn variant="dark" v-if="isMobile" @click="$store.state.mobilePropertiesExtended = !$store.state.mobilePropertiesExtended">
+            <b-btn variant="transparent" v-if="isMobile" @click="$store.state.mobilePropertiesExtended = !$store.state.mobilePropertiesExtended">
                 <i class="far fa-bars"></i>
             </b-btn>
             <template v-if="project">
@@ -14,7 +14,7 @@
                 <b-dropdown-divider></b-dropdown-divider>
                 <b-dropdown-item @click="closeProject">Fermer le projet</b-dropdown-item>
             </b-dropdown>
-            <b-dropdown text="Affichage" no-caret>
+            <b-dropdown v-if="!isMobile && !isMobileLandscape" text="Affichage" no-caret>
                 <b-dropdown-item @click="$store.state.settings.middleLines = !$store.state.settings.middleLines">
                     <b-checkbox :checked="$store.state.settings.middleLines">Afficher repère central</b-checkbox>
                 </b-dropdown-item>
@@ -52,8 +52,10 @@
         <template v-else>
             <div class="welcome-screen">
                 <b-container>
-                    <h5 class="">String Art Generator v0.1</h5>
-                    <hr>
+                    <template v-if="!isMobile">
+                        <h5 class="">String Art Generator v0.1</h5>
+                        <hr>
+                    </template>
                     <div class="buttons">
                         <h4 class="text-center">Bienvenue Arianne</h4>
                         <b-btn block @click="newProject" variant="primary">Nouveau projet</b-btn>
@@ -339,11 +341,35 @@ export default {
         }
     }
 
-    @media(max-width: 576px) {
-        padding-right: 50px;
+    @media(max-width: 576px), (max-height: 576px) {
+        padding-right: 0;
 
         .main-page {
             width: 100vw;
+            height: 100vh;
+        }
+
+        .navbar.main-menu {
+            padding: 0;
+        }
+
+        .welcome-screen {
+            display: flex;
+            margin: 60px 0 0 0;
+            overflow-x: hidden;
+            overflow-y: hidden;
+
+            .buttons {
+                display: block;
+                width: 100%;
+            }
+
+            .previous-projects {
+                display: block;
+                margin: 20px 0 0 0;
+                width: 100%;
+                max-width: initial;
+            }
         }
     }
 }
