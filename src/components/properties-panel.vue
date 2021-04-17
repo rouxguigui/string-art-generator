@@ -5,19 +5,17 @@
                 class="far fa-arrow-right"></i></b-btn>
         <div v-if="!isMobile || $store.state.mobilePropertiesExtended" id="properties" class="properties-group">
             <template v-if="!layerSelected">
-                <h4>Document</h4>
-                <div class="content">
+                <div class="tabs">
+                    <b-btn variant="tab" :class="{'active': tabSelected === 'board'}" @click="tabSelected = 'board'">Plateau</b-btn>
+                    <b-btn variant="tab" :class="{'active': tabSelected === 'shape'}" @click="tabSelected = 'shape'">Forme</b-btn>
+                    <b-btn variant="tab" :class="{'active': tabSelected === 'nails'}" @click="tabSelected = 'nails'">Clous</b-btn>
+                </div>
+                <div v-if="tabSelected === 'board'" class="content">
                     <b-form-group class="property">
                         <b-input-group>
                             <b-input-group-text>Fond</b-input-group-text>
                             <b-input type="text" maxlength="7" v-model="board.backgroundColor"></b-input>
                             <b-input type="color" class="ml-1" v-model="board.backgroundColor"></b-input>
-                        </b-input-group>
-                    </b-form-group>
-                    <b-form-group class="property">
-                        <b-input-group>
-                            <b-input-group-text>Rayon (cm)</b-input-group-text>
-                            <b-input type="number" min="1" max="150" step="1" v-model.number="board.radius"></b-input>
                         </b-input-group>
                     </b-form-group>
                     <b-form-group class="property">
@@ -30,15 +28,22 @@
                     </b-form-group>
                     <b-form-group class="property">
                         <b-input-group>
+                            <b-input-group-text>Taille fils</b-input-group-text>
+                            <b-input type="number" min="0.1" max="5" step="0.1" v-model.number="board.strings.width"></b-input>
+                            <b-input-group-text class="pl-2">px</b-input-group-text>
+                        </b-input-group>
+                    </b-form-group>
+                    <b-form-group class="property">
+                        <b-input-group>
                             <b-input-group-text>Qualité</b-input-group-text>
-                            <b-input type="number" min="1" max="50" step="1" v-model.number="board.resolution"></b-input>
+                            <b-select v-model.number="board.resolution">
+                                <option v-for="i in 50" :value="i + 1" :key="'resolution-' + i">{{ i + 1 }}</option>
+                            </b-select>
                         </b-input-group>
                     </b-form-group>
                 </div>
-                <hr>
 
-                <h4>Forme</h4>
-                <div class="content">
+                <div v-if="tabSelected === 'shape'" class="content">
                     <b-form-group class="property">
                         <b-input-group>
                             <b-input-group-text>Forme de base</b-input-group-text>
@@ -49,10 +54,55 @@
                     </b-form-group>
                     <b-form-group class="property">
                         <b-input-group>
-                            <b-input-group-text>Clous</b-input-group-text>
-                            <b-select v-model.number="board.nails">
+                            <b-input-group-text>Rayon</b-input-group-text>
+                            <b-input type="number" min="1" max="150" step="1" v-model.number="board.radius"></b-input>
+                            <b-input-group-text class="pl-2">cm</b-input-group-text>
+                        </b-input-group>
+                    </b-form-group>
+                    <b-form-group class="property">
+                        <b-input-group>
+                            <b-input-group-text>Espacement</b-input-group-text>
+                            <b-select v-model.number="board.nailsBetweenLayers">
+                                <option value="-1">Automatique</option>
+                                <option v-for="i in 150" :value="i + 1" :key="'resolution-' + i">{{ i + 1 }} clous</option>
+                            </b-select>
+                        </b-input-group>
+                    </b-form-group>
+                    <b-form-group class="property">
+                        <b-input-group>
+                            <b-input-group-text>Angle départ</b-input-group-text>
+                            <b-input type="number" min="0" max="360" step="15" v-model.number="board.startingAngle"></b-input>
+                        </b-input-group>
+                    </b-form-group>
+                    <b-form-group class="property">
+                        <b-input-group>
+                            <b-input-group-text>Sens horaire</b-input-group-text>
+                            <b-checkbox v-model="board.clockwise"></b-checkbox>
+                        </b-input-group>
+                    </b-form-group>
+                </div>
+
+                <div v-if="tabSelected === 'nails'" class="content">
+                    <b-form-group class="property">
+                        <b-input-group>
+                            <b-input-group-text>Nombre</b-input-group-text>
+                            <b-select v-model.number="board.nails.quantity">
                                 <option v-for="i in 999" :value="i + 1" :key="'nail-' + i">{{ i + 1 }}</option>
                             </b-select>
+                        </b-input-group>
+                    </b-form-group>
+                    <b-form-group class="property">
+                        <b-input-group>
+                            <b-input-group-text>Diamètre</b-input-group-text>
+                            <b-input type="number" min="0.5" max="25" step="0.25" v-model.number="board.nails.radius"></b-input>
+                            <b-input-group-text class="pl-2">mm</b-input-group-text>
+                        </b-input-group>
+                    </b-form-group>
+                    <b-form-group class="property">
+                        <b-input-group>
+                            <b-input-group-text>Couleur</b-input-group-text>
+                            <b-input type="text" maxlength="7" v-model="board.nails.color"></b-input>
+                            <b-input type="color" class="ml-1" v-model="board.nails.color"></b-input>
                         </b-input-group>
                     </b-form-group>
                 </div>
@@ -71,6 +121,14 @@
                         <b-input type="text" maxlength="7" v-model="layerSelected.color"></b-input>
                         <b-input type="color" class="ml-1" v-model="layerSelected.color"></b-input>
                     </b-input-group>
+                    <b-input-group class="mt-1">
+                        <b-input type="number" min="0" max="360" @change="updateLayerColorHSL" v-model.number="layerColorHSL[0]"></b-input>
+                        <b-input-group-text class="px-2">°</b-input-group-text>
+                        <b-input type="number" min="0" max="100" @change="updateLayerColorHSL" v-model.number="layerColorHSL[1]"></b-input>
+                        <b-input-group-text class="px-2">%</b-input-group-text>
+                        <b-input type="number" min="0" max="100" @change="updateLayerColorHSL" v-model.number="layerColorHSL[2]"></b-input>
+                        <b-input-group-text class="px-2">%</b-input-group-text>
+                    </b-input-group>
                 </b-form-group>
             </div>
         </div>
@@ -78,7 +136,7 @@
         <div id="layers" class="properties-group">
             <h4>Calques</h4>
             <div class="content">
-                <div class="layer" @click="layerSelected = null" :class="{ 'active': layerSelected === null }">
+                <div class="layer" @click="layerSelected = null" :class="{ 'active': !layerSelected }">
                     <div class="visibility"></div>
                     <div class="name">
                         Board
@@ -112,10 +170,13 @@
 </template>
 
 <script>
+import colorConvert from "color-convert";
+
 export default {
     name: "properties-panel",
     data() {
         return {
+            tabSelected: 'board',
             menuExtended: false
         }
     },
@@ -126,6 +187,20 @@ export default {
             },
             set(value) {
                 this.$emit(`input`, value);
+            }
+        },
+        layerColorHSL: {
+            get() {
+                if (this.layerSelected) {
+                    return colorConvert.hex.hsl(this.layerSelected.color);
+                } else {
+                    return null;
+                }
+            },
+            set(value) {
+                if (this.layerSelected) {
+                    this.layerSelected.color = '#' + colorConvert.hsl.hex(value);
+                }
             }
         }
     },
@@ -143,6 +218,9 @@ export default {
             }
             this.project.removeLayer(this.layerSelected);
             this.layerSelected = null;
+        },
+        updateLayerColorHSL() {
+            this.layerSelected.color = '#' + colorConvert.hsl.hex(this.layerColorHSL);
         }
     }
 }
@@ -169,11 +247,29 @@ export default {
             padding: 10px 0 0;
             min-height: 120px;
 
+            .btn.btn-tab,
             h4 {
                 font-weight: 400;
                 font-size: 10pt;
                 letter-spacing: 1px;
                 padding: 0 10px;
+                margin-bottom: 5px;
+            }
+
+            .btn-tab {
+                text-transform: uppercase;
+                color: rgba(white, 0.7);
+                border-bottom: 3px solid transparent;
+                border-radius: 0;
+
+                &:hover {
+                    color: white;
+                }
+
+                &.active {
+                    color: white;
+                    border-bottom-color: #3096cf;
+                }
             }
 
             .content {
@@ -197,8 +293,8 @@ export default {
                     vertical-align: top;
                     background: none;
                     padding: 0;
-                    width: 28px;
-                    height: 28px;
+                    width: 32px;
+                    height: 32px;
                     border-radius: 0;
                     font-weight: 400;
 
@@ -262,27 +358,10 @@ export default {
         }
     }
 
-
-    .mobile-controls {
-        .btn {
-            color: white;
-        }
-    }
-
-    @media(min-width: 576px) {
-        .mobile-controls {
-            display: none !important;
-        }
-    }
-
     @media(max-width: 576px) {
         .properties-panel {
             &:not(.extended) {
                 display: none;
-
-                .properties-group {
-                    display: none !important;
-                }
             }
 
             &.extended {
@@ -290,13 +369,8 @@ export default {
                 position: fixed;
                 width: 100%;
                 z-index: 111;
-
-                .mobile-controls {
-                    display: none !important;
-                }
             }
         }
     }
 }
-
 </style>

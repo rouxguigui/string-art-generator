@@ -1,4 +1,5 @@
 import Vue from "vue";
+import "./vue-filters";
 
 Vue.mixin({
     computed: {

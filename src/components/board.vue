@@ -22,6 +22,17 @@ export default {
         }
     },
     computed: {
+        nailsBetweenLayers() {
+            if (this.board.nailsBetweenLayers === -1) {
+                if (this.nails) {
+                    return this.nails.length / (this.layers.length - 1) / 2;
+                } else {
+                    return 10;
+                }
+            } else {
+                return this.board.nailsBetweenLayers;
+            }
+        },
         resolution() {
             return this.board.resolution;
         },
@@ -62,8 +73,8 @@ export default {
         },
         generateNails() {
             this.nails = [];
-            for (let i = 0; i < this.board.nails; i++) {
-                let angle = 90 - i * 360 / this.board.nails;// Get current angle
+            for (let i = 0; i < this.board.nails.quantity; i++) {
+                let angle = this.board.startingAngle + 90 + (this.board.clockwise ? -1 : 1) * i * 360 / this.board.nails.quantity;// Get current angle
                 angle *= Math.PI / 180;// Convert to rad
                 this.nails.push({
                     x: this.centerX + this.board.radius * this.resolution * Math.cos(angle),
@@ -105,11 +116,11 @@ export default {
             // this.canvas.context.arc(this.centerX, this.centerY, 5, 0, Math.PI * 2);
             // this.canvas.context.fill();
 
-            this.canvas.context.fillStyle = `#aaa`;
+            this.canvas.context.fillStyle = this.board.nails.color;
             let index = 0;
             for (let nail of this.nails) {
                 this.canvas.context.beginPath();
-                this.canvas.context.arc(nail.x, nail.y, 3, 0, Math.PI * 2);
+                this.canvas.context.arc(nail.x, nail.y, this.board.nails.radius * this.resolution / 20, 0, Math.PI * 2);
                 this.canvas.context.fill();
                 if (this.settings.nailNumbers) {
                     this.canvas.context.strokeText(index, nail.textX + 5, nail.textY + 5);
@@ -130,9 +141,9 @@ export default {
             }
 
             this.canvas.context.strokeStyle = layer.color;
-            this.canvas.context.lineWidth = 1;
+            this.canvas.context.lineWidth = this.board.strings.width;
 
-            let startNail = Math.round(-index * this.nails.length / (this.layers.length - 1) / 2);
+            let startNail = Math.round(-index * this.nailsBetweenLayers);
             this.canvas.context.beginPath();
             for (let i = 0; i < this.nails.length / 2; i++) {
                 let nail = this.getNail(startNail + i);
