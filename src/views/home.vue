@@ -3,9 +3,17 @@
         <b-navbar class="main-menu" variant="dark" fixed="top">
             <b-dropdown text="Menu" no-caret>
                 <b-dropdown-item @click="newProject">Nouveau</b-dropdown-item>
-                <b-dropdown-item @click="project.load()">Ouvrir</b-dropdown-item>
+                <b-dropdown-item @click="project.open()">Ouvrir</b-dropdown-item>
                 <b-dropdown-divider></b-dropdown-divider>
                 <b-dropdown-item @click="project.save()">Enregistrer</b-dropdown-item>
+            </b-dropdown>
+            <b-dropdown text="Affichage" no-caret>
+                <b-dropdown-item @click="$store.state.settings.middleLines = !$store.state.settings.middleLines">
+                    <b-checkbox :checked="$store.state.settings.middleLines">Afficher repère central</b-checkbox>
+                </b-dropdown-item>
+                <b-dropdown-item @click="$store.state.settings.diagonalLines = !$store.state.settings.diagonalLines">
+                    <b-checkbox :checked="$store.state.settings.diagonalLines">Afficher lignes diagonale</b-checkbox>
+                </b-dropdown-item>
             </b-dropdown>
             <b-btn variant="transparent" @click="setZoom(-.1)"><i class="far fa-search-minus"></i></b-btn>
             <div class="zoom">{{Math.round(zoom * 100)}}%</div>
@@ -18,6 +26,13 @@
         <main-page>
             <board :zoom="zoom"></board>
         </main-page>
+        <b-modal v-model="showPreviousSessionModal" title="Continuer dernier projet">
+            <div class="text-center f-500">Voulez-vous ouvrir le projet <u>{{previousProjectName}}</u></div>
+            <template #modal-footer>
+                <b-btn @click="showPreviousSessionModal = false">Annuler</b-btn>
+                <b-btn variant="primary" @click="project.open(); showPreviousSessionModal = false">Ouvrir</b-btn>
+            </template>
+        </b-modal>
     </div>
 </template>
 
@@ -33,12 +48,21 @@ export default {
     data() {
         return {
             zoom: 1,
+            showPreviousSessionModal: false,
+            previousProjectName: '',
             layerSelected: false,
             menuExtended: false,
         }
     },
     mounted() {
         this.newProject();
+        // let lastProject = localStorage.getItem("project-default");
+        // if (lastProject) {
+        //     lastProject = JSON.parse(lastProject);
+        //     this.previousProjectName = lastProject.name;
+        //     this.showPreviousSessionModal = true;
+        // }
+        this.project.open();
     },
     methods: {
         newProject() {

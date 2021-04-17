@@ -4,7 +4,54 @@
                @click="menuExtended = false"><i
                 class="fas fa-arrow-right"></i></b-btn>
         <div id="properties" class="properties-group">
-            <h4>Propriétés</h4>
+            <template v-if="!layerSelected">
+                <h4>Document</h4>
+                <div class="content">
+                    <b-form-group class="property">
+                        <b-input-group>
+                            <b-input-group-text>Fond</b-input-group-text>
+                            <b-input type="text" maxlength="7" v-model="board.backgroundColor"></b-input>
+                            <b-input type="color" class="ml-1" v-model="board.backgroundColor"></b-input>
+                        </b-input-group>
+                    </b-form-group>
+                    <b-form-group class="property">
+                        <b-input-group>
+                            <b-input-group-text>Rayon (cm)</b-input-group-text>
+                            <b-input type="number" min="1" max="150" step="1" v-model.number="board.radius"></b-input>
+                        </b-input-group>
+                    </b-form-group>
+                    <b-form-group class="property">
+                        <b-input-group>
+                            <b-input-group-text>Taille (cm)</b-input-group-text>
+                            <b-input type="number" min="1" max="150" step="1" v-model.number="board.width"></b-input>
+                            <b-input-group-text class="mx-2">x</b-input-group-text>
+                            <b-input type="number" min="1" max="150" step="1" v-model.number="board.height"></b-input>
+                        </b-input-group>
+                    </b-form-group>
+                </div>
+                <hr>
+
+                <h4>Forme</h4>
+                <div class="content">
+                    <b-form-group class="property">
+                        <b-input-group>
+                            <b-input-group-text>Forme de base</b-input-group-text>
+                            <b-select v-model="board.shape">
+                                <option value="circle">Cercle</option>
+                            </b-select>
+                        </b-input-group>
+                    </b-form-group>
+                    <b-form-group class="property">
+                        <b-input-group>
+                            <b-input-group-text>Clous</b-input-group-text>
+                            <b-select v-model.number="board.nails">
+                                <option v-for="i in 999" :value="i + 1" :key="'nail-' + i">{{ i + 1 }}</option>
+                            </b-select>
+                        </b-input-group>
+                    </b-form-group>
+                </div>
+            </template>
+
             <div class="content" v-if="layerSelected">
                 <b-form-group class="property">
                     <b-input-group>
@@ -20,42 +67,10 @@
                     </b-input-group>
                 </b-form-group>
             </div>
-            <div class="content" v-else>
-                <b-form-group class="property">
-                    <b-input-group>
-                        <b-input-group-text>Forme de base</b-input-group-text>
-                        <b-select v-model="board.shape">
-                            <option value="circle">Cercle</option>
-                        </b-select>
-                    </b-input-group>
-                </b-form-group>
-                <b-form-group class="property">
-                    <b-input-group>
-                        <b-input-group-text>Rayon (cm)</b-input-group-text>
-                        <b-input type="number" min="1" max="150" step="1" v-model.number="board.radius"></b-input>
-                    </b-input-group>
-                </b-form-group>
-                <b-form-group class="property">
-                    <b-input-group>
-                        <b-input-group-text>Clous</b-input-group-text>
-                        <b-select v-model.number="board.nails">
-                            <option v-for="i in 999" :value="i + 1" :key="'nail-' + i">{{ i + 1 }}</option>
-                        </b-select>
-                    </b-input-group>
-                </b-form-group>
-                <b-form-group class="property">
-                    <b-input-group>
-                        <b-input-group-text>Taille (cm)</b-input-group-text>
-                        <b-input type="number" min="1" max="150" step="1" v-model.number="board.width"></b-input>
-                        <b-input-group-text class="mx-2">x</b-input-group-text>
-                        <b-input type="number" min="1" max="150" step="1" v-model.number="board.height"></b-input>
-                    </b-input-group>
-                </b-form-group>
-            </div>
         </div>
 
         <div id="layers" class="properties-group">
-            <h4>Couches</h4>
+            <h4>Calques</h4>
             <div class="content">
                 <div class="layer" @click="layerSelected = null" :class="{ 'active': layerSelected === null }">
                     <div class="visibility"></div>
@@ -168,6 +183,11 @@ export default {
 
             .content {
                 padding: 0 10px;
+            }
+
+            hr {
+                margin: 10px 0;
+                border-top: 1px solid #292e30;
             }
 
             .actions {

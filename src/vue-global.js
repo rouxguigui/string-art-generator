@@ -10,6 +10,14 @@ Vue.mixin({
                 this.$store.commit("setProject", value);
             }
         },
+        settings: {
+            get() {
+                return this.$store.state.settings;
+            },
+            set(value) {
+                this.$store.commit("setSettings", value);
+            }
+        },
         board: {
             get() {
                 if (this.$store.state.project) {

@@ -5,13 +5,21 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
-        project: null
+        project: null,
+        settings: {
+            middleLines: true,
+            diagonalLines: true,
+            showNumbers: true
+        }
     },
     getters: {
     },
     mutations: {
         setProject(state, project) {
             state.project = project;
+        },
+        setSettings(state, settings) {
+            state.settings = settings;
         }
     },
     actions: {

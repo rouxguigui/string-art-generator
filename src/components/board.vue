@@ -48,6 +48,18 @@ export default {
                 this.updateLoop();
             });
         },
+        redraw() {
+            if (this.drawing) {
+                return false;
+            }
+            this.drawing = true;
+            this.canvas.clear(this.board.backgroundColor);
+            this.generateNails();
+            this.drawLayers();
+            this.drawNails();
+            this.refreshRequired = false;
+            this.drawing = false;
+        },
         generateNails() {
             this.nails = [];
             for (let i = 0; i < this.board.nails; i++) {
@@ -61,39 +73,32 @@ export default {
                 });
             }
         },
-        redraw() {
-            if (this.drawing) {
-                return false;
-            }
-            this.drawing = true;
-            this.canvas.clear();
-            this.generateNails();
-            this.drawLayers();
-            this.drawNails();
-            this.refreshRequired = false;
-            this.drawing = false;
-        },
         drawNails() {
             this.canvas.context.strokeStyle = `#bbb`;
             this.canvas.context.lineWidth = 1;
             // Draw cross vertically and horizontally
-            // this.canvas.context.beginPath();
-            // this.canvas.context.moveTo(0, this.centerY);
-            // this.canvas.context.lineTo(this.board.width * this.resolution, this.centerY);
-            // this.canvas.context.stroke();
-            // this.canvas.context.beginPath();
-            // this.canvas.context.moveTo(this.centerX, 0);
-            // this.canvas.context.lineTo(this.centerX, this.board.height * this.resolution);
-            // this.canvas.context.stroke();
+            if (this.$store.state.settings.middleLines) {
+                this.canvas.context.beginPath();
+                this.canvas.context.moveTo(0, this.centerY);
+                this.canvas.context.lineTo(this.board.width * this.resolution, this.centerY);
+                this.canvas.context.stroke();
+                this.canvas.context.beginPath();
+                this.canvas.context.moveTo(this.centerX, 0);
+                this.canvas.context.lineTo(this.centerX, this.board.height * this.resolution);
+                this.canvas.context.stroke();
+            }
+
             // Draw cross diagonal
-            this.canvas.context.beginPath();
-            this.canvas.context.moveTo(0, 0);
-            this.canvas.context.lineTo(this.board.width * this.resolution, this.board.height * this.resolution);
-            this.canvas.context.stroke();
-            this.canvas.context.beginPath();
-            this.canvas.context.moveTo(0, this.board.height * this.resolution);
-            this.canvas.context.lineTo(this.board.width * this.resolution, 0);
-            this.canvas.context.stroke();
+            if (this.$store.state.settings.diagonalLines) {
+                this.canvas.context.beginPath();
+                this.canvas.context.moveTo(0, 0);
+                this.canvas.context.lineTo(this.board.width * this.resolution, this.board.height * this.resolution);
+                this.canvas.context.stroke();
+                this.canvas.context.beginPath();
+                this.canvas.context.moveTo(0, this.board.height * this.resolution);
+                this.canvas.context.lineTo(this.board.width * this.resolution, 0);
+                this.canvas.context.stroke();
+            }
 
             // this.canvas.context.fillStyle = `#000`;
             // this.canvas.context.beginPath();
@@ -125,13 +130,13 @@ export default {
             this.canvas.context.strokeStyle = layer.color;
             this.canvas.context.lineWidth = 1;
 
-            let startNail = -index * this.board.nails / (this.layers.length - 1) / 2;
+            let startNail = Math.round(-index * this.nails.length / (this.layers.length - 1) / 2);
             this.canvas.context.beginPath();
-            for (let i = 0; i < this.board.nails / 2; i++) {
-                let nail = this.nails[this.modulo((startNail + i), this.board.nails)];
+            for (let i = 0; i < this.nails.length / 2; i++) {
+                let nail = this.getNail(startNail + i);
                 this.canvas.context.moveTo(nail.x, nail.y);
 
-                nail = this.nails[this.modulo(startNail + i * 2 + this.board.nails / 2, this.board.nails)];
+                nail = this.getNail(startNail + i * 2 + this.nails.length / 2);
                 this.canvas.context.lineTo(nail.x, nail.y);
             }
             this.canvas.context.stroke();
@@ -143,10 +148,19 @@ export default {
             } else {
                 return mod;
             }
+        },
+        getNail(index) {
+            return this.nails[this.modulo(Math.round(index), this.nails.length)];
         }
     },
     watch: {
         board: {
+            deep: true,
+            handler() {
+                this.refreshRequired = true;
+            }
+        },
+        settings: {
             deep: true,
             handler() {
                 this.refreshRequired = true;

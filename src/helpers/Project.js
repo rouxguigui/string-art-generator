@@ -27,7 +27,7 @@ export default class Project {
         let layer = {
             index: this.layers.length,
             id: generateGuid(),
-            name: `Fil ${this.layers.length}`,
+            name: `Fil ${this.layers.length + 1}`,
             color: PaletteHelper.getDefaultColor(this.layers.length),
             visible: true
         };
@@ -48,7 +48,7 @@ export default class Project {
         localStorage.setItem('project-' + this.id, JSON.stringify(json));
     }
 
-    load() {
+    open() {
         // Temporary for now
         let project = localStorage.getItem('project-default');
         if (project) {
