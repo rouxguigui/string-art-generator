@@ -1,6 +1,9 @@
 <template>
     <div id="home" v-if="project">
         <b-navbar class="main-menu" variant="dark" fixed="top">
+            <b-btn variant="dark" v-if="isMobile" @click="$store.state.mobilePropertiesExtended = !$store.state.mobilePropertiesExtended">
+                <i class="far fa-bars"></i>
+            </b-btn>
             <b-dropdown text="Menu" no-caret>
                 <b-dropdown-item @click="newProject">Nouveau</b-dropdown-item>
                 <b-dropdown-item @click="project.open()">Ouvrir</b-dropdown-item>
@@ -14,13 +17,19 @@
                 <b-dropdown-item @click="$store.state.settings.diagonalLines = !$store.state.settings.diagonalLines">
                     <b-checkbox :checked="$store.state.settings.diagonalLines">Afficher lignes diagonale</b-checkbox>
                 </b-dropdown-item>
+                <b-dropdown-item @click="$store.state.settings.nailNumbers = !$store.state.settings.nailNumbers">
+                    <b-checkbox :checked="$store.state.settings.nailNumbers">Afficher le numéro des clous</b-checkbox>
+                </b-dropdown-item>
             </b-dropdown>
-            <b-btn variant="transparent" @click="setZoom(-.1)"><i class="far fa-search-minus"></i></b-btn>
+            <b-btn variant="transparent" @click.stop="setZoom(-.1)"><i class="far fa-search-minus"></i></b-btn>
             <div class="zoom">{{Math.round(zoom * 100)}}%</div>
-            <b-btn variant="transparent" @click="setZoom(.1)"><i class="far fa-search-plus"></i></b-btn>
-            <div class="separator"></div>
-            <b-input class="project-name" v-model="project.name"></b-input>
-            <b-navbar-brand class="ml-auto">String Art Generator</b-navbar-brand>
+            <b-btn variant="transparent" @click.stop="setZoom(.1)"><i class="far fa-search-plus"></i></b-btn>
+
+            <template v-if="!isMobile">
+                <div class="separator"></div>
+                <b-input class="project-name" v-model="project.name"></b-input>
+                <b-navbar-brand class="ml-auto">String Art Generator</b-navbar-brand>
+            </template>
         </b-navbar>
         <properties-panel v-model="layerSelected"></properties-panel>
         <main-page>
@@ -153,89 +162,6 @@ export default {
         }
     }
 
-    .properties-panel {
-        position: fixed;
-        z-index: 1;
-        top: 40px;
-        right: 0;
-        width: 270px;
-        bottom: 0;
-        flex: 1;
-        background: #374145;
-        display: flex;
-        flex-direction: column;
-        overflow: hidden auto;
-
-        .properties-group {
-            border-top: 2px solid rgba(black, 0.2);
-
-            padding: 10px 0;
-            min-height: 120px;
-
-            h4 {
-                font-weight: 400;
-                font-size: 10pt;
-                letter-spacing: 1px;
-                padding: 0 10px;
-            }
-
-            .content {
-                padding: 0 10px;
-            }
-        }
-    }
-
-    #properties {
-        flex: 2;
-        overflow: hidden auto;
-    }
-
-    .options {
-        flex: 0.1;
-    }
-
-    #layers {
-        flex: 2;
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-
-        .content {
-            padding: 0;
-            overflow: hidden auto;
-            height: 100%;
-        }
-
-        .layer {
-            padding: 5px 10px;
-            width: 100%;
-            display: flex;
-            flex-direction: row;
-            cursor: pointer;
-            justify-content: center;
-
-            .visibility {
-                margin-right: 10px;
-            }
-
-            .name {
-                flex: 1;
-            }
-
-            &:hover {
-                background-color: rgba(white, 0.1);
-            }
-
-            &.active {
-                background-color: #3096cf;
-            }
-        }
-
-        .layer + .layer {
-            border-top: 1px solid rgba(black, 0.2);
-        }
-    }
-
     .main-page {
         width: calc(100vw - 270px);
         max-height: 100vh;
@@ -254,52 +180,12 @@ export default {
         }
     }
 
-    @media(min-width: 576px) {
-        .mobile-controls {
-            display: none !important;
-        }
-    }
-
     @media(max-width: 576px) {
         padding-right: 50px;
-
 
         .main-page {
             width: 100vw;
         }
-
-        .properties-panel {
-            &:not(.extended) {
-                width: 50px;
-
-                .properties-group {
-                    display: none !important;
-                }
-            }
-
-            &.extended {
-                position: fixed;
-                width: 100%;
-
-                .mobile-controls {
-                    display: none !important;
-                }
-            }
-        }
-    }
-}
-
-@media print {
-    #home {
-        padding: 0;
-
-        .main-page {
-            padding: 0 !important;
-            overflow: visible;
-        }
-    }
-    .properties-panel {
-        display: none;
     }
 }
 

@@ -41,6 +41,9 @@ Vue.mixin({
             set(value) {
                 this.$store.state.project.layers = value;
             }
+        },
+        isMobile() {
+            return window.innerWidth < 576;
         }
     }
 });

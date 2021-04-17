@@ -1,9 +1,9 @@
 <template>
-    <div class="properties-panel" :class="{'extended' : menuExtended}">
-        <b-btn size="sm" v-if="menuExtended" class="float-right" variant="transparent"
-               @click="menuExtended = false"><i
-                class="fas fa-arrow-right"></i></b-btn>
-        <div id="properties" class="properties-group">
+    <div class="properties-panel" :class="{'extended' : $store.state.mobilePropertiesExtended}">
+        <b-btn size="sm" v-if="menuExtended" class="float-right" variant="primary"
+               @click="$store.state.mobilePropertiesExtended = false"><i
+                class="far fa-arrow-right"></i></b-btn>
+        <div v-if="!isMobile || $store.state.mobilePropertiesExtended" id="properties" class="properties-group">
             <template v-if="!layerSelected">
                 <h4>Document</h4>
                 <div class="content">
@@ -26,6 +26,12 @@
                             <b-input type="number" min="1" max="150" step="1" v-model.number="board.width"></b-input>
                             <b-input-group-text class="mx-2">x</b-input-group-text>
                             <b-input type="number" min="1" max="150" step="1" v-model.number="board.height"></b-input>
+                        </b-input-group>
+                    </b-form-group>
+                    <b-form-group class="property">
+                        <b-input-group>
+                            <b-input-group-text>Qualité</b-input-group-text>
+                            <b-input type="number" min="1" max="50" step="1" v-model.number="board.resolution"></b-input>
                         </b-input-group>
                     </b-form-group>
                 </div>
@@ -102,17 +108,6 @@
                 </b-btn>
             </div>
         </div>
-
-        <div class="mobile-controls d-flex flex-column h-100 justify-content-end my-2">
-            <b-btn size="sm" block variant="outline-white" @click="zoom > 0.1 ? zoom += 0.1 : ''"><i
-                    class="far fa-plus"></i></b-btn>
-            <b-btn size="sm" block variant="outline-white" @click="zoom < 3 ? zoom -= 0.1 : ''"><i
-                    class="far fa-minus"></i>
-            </b-btn>
-            <b-btn size="sm" block variant="outline-white" @click="menuExtended = true"><i
-                    class="far fa-arrow-left"></i>
-            </b-btn>
-        </div>
     </div>
 </template>
 
@@ -121,6 +116,7 @@ export default {
     name: "properties-panel",
     data() {
         return {
+            menuExtended: false
         }
     },
     computed: {
@@ -134,8 +130,7 @@ export default {
         }
     },
     props: {
-        value: {},
-        menuExtended: {type: Boolean}
+        value: {}
     },
     methods: {
         addLayer() {
@@ -267,6 +262,13 @@ export default {
         }
     }
 
+
+    .mobile-controls {
+        .btn {
+            color: white;
+        }
+    }
+
     @media(min-width: 576px) {
         .mobile-controls {
             display: none !important;
@@ -276,7 +278,7 @@ export default {
     @media(max-width: 576px) {
         .properties-panel {
             &:not(.extended) {
-                width: 50px;
+                display: none;
 
                 .properties-group {
                     display: none !important;
@@ -284,8 +286,10 @@ export default {
             }
 
             &.extended {
+                display: block;
                 position: fixed;
                 width: 100%;
+                z-index: 111;
 
                 .mobile-controls {
                     display: none !important;

@@ -106,13 +106,15 @@ export default {
             // this.canvas.context.fill();
 
             this.canvas.context.fillStyle = `#aaa`;
-            // let index = 0;
+            let index = 0;
             for (let nail of this.nails) {
                 this.canvas.context.beginPath();
                 this.canvas.context.arc(nail.x, nail.y, 3, 0, Math.PI * 2);
                 this.canvas.context.fill();
-                // this.canvas.context.strokeText(index, nail.textX + 5, nail.textY + 5);
-                // index += 1;
+                if (this.settings.nailNumbers) {
+                    this.canvas.context.strokeText(index, nail.textX + 5, nail.textY + 5);
+                }
+                index += 1;
             }
         },
         drawLayers() {
@@ -185,7 +187,7 @@ export default {
 
     @media(max-width: 576px) {
         canvas {
-            margin: 10px 60px 10px 10px;
+            margin: 50px 10px 10px 10px;
         }
     }
 }

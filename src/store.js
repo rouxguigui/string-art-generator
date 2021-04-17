@@ -7,10 +7,11 @@ export default new Vuex.Store({
     state: {
         project: null,
         settings: {
-            middleLines: true,
-            diagonalLines: true,
-            showNumbers: true
-        }
+            middleLines: false,
+            diagonalLines: false,
+            nailNumbers: false
+        },
+        mobilePropertiesExtended: false
     },
     getters: {
     },

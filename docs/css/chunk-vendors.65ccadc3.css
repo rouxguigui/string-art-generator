@@ -9,4 +9,8 @@
 /*!
  * Font Awesome Pro 5.15.3 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License)
- */@font-face{font-family:Font Awesome\ 5 Pro;font-style:normal;font-weight:900;font-display:block;src:url(../fonts/fa-solid-900.0ab669f1.eot);src:url(../fonts/fa-solid-900.0ab669f1.eot?#iefix) format("embedded-opentype"),url(../fonts/fa-solid-900.978b27ec.woff2) format("woff2"),url(../fonts/fa-solid-900.42d66a3e.woff) format("woff"),url(../fonts/fa-solid-900.5f2f8485.ttf) format("truetype"),url(../img/fa-solid-900.f34def04.svg#fontawesome) format("svg")}.fa,.fas{font-family:Font Awesome\ 5 Pro;font-weight:900}
+ */@font-face{font-family:Font Awesome\ 5 Pro;font-style:normal;font-weight:400;font-display:block;src:url(../fonts/fa-regular-400.145aabea.eot);src:url(../fonts/fa-regular-400.145aabea.eot?#iefix) format("embedded-opentype"),url(../fonts/fa-regular-400.d8689b99.woff2) format("woff2"),url(../fonts/fa-regular-400.f48a8829.woff) format("woff"),url(../fonts/fa-regular-400.04842b94.ttf) format("truetype"),url(../img/fa-regular-400.94f6c6e0.svg#fontawesome) format("svg")}.far{font-weight:400}
+/*!
+ * Font Awesome Pro 5.15.3 by @fontawesome - https://fontawesome.com
+ * License - https://fontawesome.com/license (Commercial License)
+ */@font-face{font-family:Font Awesome\ 5 Pro;font-style:normal;font-weight:300;font-display:block;src:url(../fonts/fa-light-300.a1c78788.eot);src:url(../fonts/fa-light-300.a1c78788.eot?#iefix) format("embedded-opentype"),url(../fonts/fa-light-300.de11da0f.woff2) format("woff2"),url(../fonts/fa-light-300.c5cd85f2.woff) format("woff"),url(../fonts/fa-light-300.fdfecd10.ttf) format("truetype"),url(../img/fa-light-300.168dede1.svg#fontawesome) format("svg")}.fal,.far{font-family:Font Awesome\ 5 Pro}.fal{font-weight:300}
