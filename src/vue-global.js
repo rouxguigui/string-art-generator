@@ -10,20 +10,30 @@ Vue.mixin({
                 this.$store.commit("setProject", value);
             }
         },
-        board() {
-            if (this.$store.state.project) {
-                return this.$store.state.project.board;
-            } else {
-                return null;
+        board: {
+            get() {
+                if (this.$store.state.project) {
+                    return this.$store.state.project.board;
+                } else {
+                    return null;
+                }
+            },
+            set(value) {
+                this.$store.state.project.board = value;
             }
         },
-        layers() {
-            if (this.$store.state.project) {
-                return this.$store.state.project.layers;
-            } else {
-                return null;
+        layers: {
+            get() {
+                if (this.$store.state.project) {
+                    return this.$store.state.project.layers;
+                } else {
+                    return null;
+                }
+            },
+            set(value) {
+                this.$store.state.project.layers = value;
             }
-        },
+        }
     }
 });
 

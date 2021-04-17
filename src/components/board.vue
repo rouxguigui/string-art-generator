@@ -17,6 +17,7 @@ export default {
         return {
             refreshRequired: true,
             canvas: null,
+            drawing: false,
             nails: []
         }
     },
@@ -61,11 +62,16 @@ export default {
             }
         },
         redraw() {
+            if (this.drawing) {
+                return false;
+            }
+            this.drawing = true;
             this.canvas.clear();
             this.generateNails();
             this.drawLayers();
             this.drawNails();
             this.refreshRequired = false;
+            this.drawing = false;
         },
         drawNails() {
             this.canvas.context.strokeStyle = `#bbb`;

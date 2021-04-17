@@ -7,12 +7,15 @@ import '@fortawesome/fontawesome-pro/scss/fontawesome.scss'
 import '@fortawesome/fontawesome-pro/scss/regular.scss'
 import '@fortawesome/fontawesome-pro/scss/light.scss'
 import './vue-global';
+import draggable from 'vuedraggable';
 
 
 Vue.config.productionTip = false;
 
 // Install BootstrapVue
 Vue.use(BootstrapVue);
+
+Vue.component(`draggable`, draggable);
 
 new Vue({
   store,

@@ -63,20 +63,28 @@
                         Board
                     </div>
                 </div>
-                <div class="layer" v-for="(layer, index) in layers" :key="'index-' + index"
-                     @click="layerSelected = layer"
-                     :class="{ 'active': layerSelected === layer }">
-                    <div class="visibility" @click.stop="layer.visible = !layer.visible">
-                        <i class="far fa-eye fa-fw" v-if="layer.visible"></i>
-                        <i class="far fa-eye-slash fa-fw" v-else></i>
+                <draggable v-model="layers" ghost-class="list-item-ghost" drag-class="list-item-drag" animation="150">
+                    <div class="layer" v-for="layer in layers" :key="layer.id"
+                         @click="layerSelected = layer"
+                         :class="{ 'active': layerSelected === layer }">
+                        <div class="visibility" @click.stop="layer.visible = !layer.visible">
+                            <i class="far fa-eye fa-fw" v-if="layer.visible"></i>
+                            <i class="far fa-eye-slash fa-fw" v-else></i>
+                        </div>
+                        <div class="name">
+                            {{ layer.name }}
+                        </div>
+                        <div class="color">
+                            <i :style="{color: layer.color}">⬤</i>
+                        </div>
                     </div>
-                    <div class="name">
-                        {{ layer.name }}
-                    </div>
-                    <div class="color">
-                        <i :style="{color: layer.color}">⬤</i>
-                    </div>
-                </div>
+                </draggable>
+            </div>
+            <div class="actions">
+                <b-btn @click="addLayer"><i class="far fa-plus-square"></i></b-btn>
+                <b-btn class="ml-auto" :disabled="layerSelected === null" @click="removeLayer">
+                    <i class="far fa-trash"></i>
+                </b-btn>
             </div>
         </div>
 
@@ -116,7 +124,15 @@ export default {
     },
     methods: {
         addLayer() {
-            this.project.addLayer();
+            let layer = this.project.addLayer();
+            this.layerSelected = layer;
+        },
+        removeLayer() {
+            if (!this.layerSelected) {
+                return false;
+            }
+            this.project.removeLayer(this.layerSelected);
+            this.layerSelected = null;
         }
     }
 }
@@ -140,7 +156,7 @@ export default {
         .properties-group {
             border-top: 2px solid rgba(black, 0.2);
 
-            padding: 10px 0;
+            padding: 10px 0 0;
             min-height: 120px;
 
             h4 {
@@ -152,6 +168,29 @@ export default {
 
             .content {
                 padding: 0 10px;
+            }
+
+            .actions {
+                border-top: 2px solid #292e30;
+                background-color: #374145;
+                padding: 0;
+                width: 100%;
+                display: flex;
+                flex-direction: row;
+
+                .btn {
+                    vertical-align: top;
+                    background: none;
+                    padding: 0;
+                    width: 28px;
+                    height: 28px;
+                    border-radius: 0;
+                    font-weight: 400;
+
+                    &:hover {
+                        background: #3096cf;
+                    }
+                }
             }
         }
     }
@@ -166,10 +205,11 @@ export default {
     }
 
     #layers {
-        flex: 2;
+        flex: 3;
         width: 100%;
         display: flex;
         flex-direction: column;
+        user-select: none;
 
         .content {
             padding: 0;

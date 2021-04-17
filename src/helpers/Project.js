@@ -1,4 +1,5 @@
 import PaletteHelper from "@/helpers/PaletteHelper.js";
+import {generateGuid} from "@/utils.js";
 
 export default class Project {
     constructor(name = 'Nouveau projet') {
@@ -23,11 +24,19 @@ export default class Project {
     }
 
     addLayer() {
-        this.layers.push({
+        let layer = {
+            index: this.layers.length,
+            id: generateGuid(),
             name: `Fil ${this.layers.length}`,
             color: PaletteHelper.getDefaultColor(this.layers.length),
             visible: true
-        });
+        };
+        this.layers.push(layer);
+        return layer;
+    }
+
+    removeLayer(layer) {
+        this.layers.splice(this.layers.indexOf(layer), 1);
     }
 
     save() {
