@@ -19,6 +19,7 @@
     "papaparse": "^5.3.0",
     "sweetalert2": "^10.16.3",
     "vue": "^2.6.12",
+    "vue-dragscroll": "^3.0.0",
     "vue-html2canvas": "0.0.4",
     "vue-swal": "^1.0.0",
     "vuedraggable": "^2.24.3",

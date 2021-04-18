@@ -1,5 +1,5 @@
 <template>
-  <div class="main-page">
+  <div class="main-page" v-dragscroll>
     <slot></slot>
   </div>
 </template>

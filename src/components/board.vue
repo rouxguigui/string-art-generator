@@ -1,6 +1,6 @@
 <template>
-    <div class="board">
-        <div class="board-container" :style="{transform: 'scale(' + zoom + ')'}">
+    <div class="board" @wheel="$emit('wheel', $event)">
+        <div class="board-container" :style="{zoom: zoom}" :width="board.width * resolution + 40" :height="board.height * resolution + 60">
             <canvas id="board-canvas" :width="board.width * resolution" :height="board.height * resolution"
                     @mousemove="onMouseMove" @click="onClick"></canvas>
             <canvas id="overlay-canvas" :width="board.width * resolution" :height="board.height * resolution"></canvas>
@@ -69,7 +69,8 @@ export default {
         findNailByMouseEvt(evt) {
             let radius = (this.board.nails.radius + 2) * this.resolution / 20;
             return this.nails.find(n => {
-                return n.x - radius < evt.offsetX && evt.offsetX < n.x + radius && n.y - radius < evt.offsetY && evt.offsetY < n.y + radius;
+                return n.x - radius < evt.offsetX / this.zoom && evt.offsetX / this.zoom < n.x + radius &&
+                        n.y - radius < evt.offsetY / this.zoom && evt.offsetY / this.zoom < n.y + radius;
             });
         },
         updateLoop() {
@@ -90,6 +91,7 @@ export default {
             this.drawing = true;
             this.canvas.clear(this.board.backgroundColor);
             this.generateNails();
+            this.drawGrid();
             this.drawLayers();
             this.drawNails();
             this.drawOverlay();
@@ -136,7 +138,7 @@ export default {
                 });
             }
         },
-        drawNails() {
+        drawGrid() {
             this.canvas.context.strokeStyle = `#bbb`;
             this.canvas.context.lineWidth = 1;
             // Draw cross vertically and horizontally
@@ -162,7 +164,8 @@ export default {
                 this.canvas.context.lineTo(this.board.width * this.resolution, 0);
                 this.canvas.context.stroke();
             }
-
+        },
+        drawNails() {
             this.canvas.context.textAlign = 'center';
             this.canvas.context.textBaseline = 'middle';
             this.canvas.context.fillStyle = this.board.nails.color;
@@ -191,6 +194,8 @@ export default {
 
             this.canvas.context.strokeStyle = layer.color;
             this.canvas.context.lineWidth = this.board.strings.width;
+            this.canvas.context.textAlign = 'center';
+            this.canvas.context.textBaseline = 'middle';
 
             layer.length = 0;
             let startNail = Math.round(-index * this.nailsBetweenLayers);
@@ -245,12 +250,12 @@ export default {
 <style lang="scss" scoped>
 .board {
     canvas {
-
+        margin: 50px 10px 10px 10px;
     }
 
     .board-container {
         position: relative;
-        margin: 50px 10px 10px 10px;
+        //margin: 50px 10px 10px 10px;
     }
 
     #overlay-canvas {

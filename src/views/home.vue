@@ -46,7 +46,7 @@
         <template  v-if="project">
             <properties-panel v-model="layerSelected"></properties-panel>
             <main-page>
-                <board :zoom="zoom"></board>
+                <board :zoom="zoom" @wheel="onWheelChanged"></board>
             </main-page>
         </template>
         <template v-else>
@@ -103,6 +103,14 @@ export default {
         this.loadRecentProjects();
     },
     methods: {
+        onWheelChanged(evt) {
+            console.log(evt);
+            if (evt.deltaY > 0) {
+                this.setZoom(-0.1);
+            } else {
+                this.setZoom(0.1);
+            }
+        },
         loadRecentProjects() {
             let projects = localStorage.getItem('projects');
             if (projects) {
