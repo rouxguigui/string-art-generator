@@ -110,6 +110,7 @@
             </template>
 
             <div class="content" v-if="layerSelected">
+                <h4>Fils</h4>
                 <b-form-group class="property">
                     <b-input-group>
                         <b-input-group-text>Nom</b-input-group-text>
@@ -128,7 +129,14 @@
                         <b-input type="number" min="0" max="100" @change="updateLayerColorHSL" v-model.number="layerColorHSL[1]"></b-input>
                         <b-input-group-text class="px-2">%</b-input-group-text>
                         <b-input type="number" min="0" max="100" @change="updateLayerColorHSL" v-model.number="layerColorHSL[2]"></b-input>
-                        <b-input-group-text class="px-2">%</b-input-group-text>
+                        <b-input-group-text class="pl-2">%</b-input-group-text>
+                    </b-input-group>
+                </b-form-group>
+                <b-form-group class="property">
+                    <b-input-group>
+                        <b-input-group-text>Longueur</b-input-group-text>
+                        <b-input readonly :value="layerSelected.length|number"></b-input>
+                        <b-input-group-text class="pl-2">m</b-input-group-text>
                     </b-input-group>
                 </b-form-group>
             </div>
@@ -138,7 +146,7 @@
             <h4>Calques</h4>
             <div class="content">
                 <div class="layer" @click="layerSelected = null" :class="{ 'active': !layerSelected }">
-                    <div class="visibility"></div>
+                    <div class="visibility"><i class="far fa-game-board-alt"></i></div>
                     <div class="name">Plateau</div>
                 </div>
                 <draggable v-model="layers" :handle="isMobile || isMobileLandscape ? '.handle': null" ghost-class="list-item-ghost" drag-class="list-item-drag" animation="150">

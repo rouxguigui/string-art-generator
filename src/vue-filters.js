@@ -8,6 +8,12 @@ export function date(value) {
 
 Vue.filter(`date`, date);
 
+Vue.filter(`number`, function(value) {
+    if (value > 0 || value < 0)
+        return (+value).toLocaleString();
+    return '-';
+});
+
 // Vue.filter(`number`, function(value) {
 //     if (isNullOrUndefined(value))
 //         return `-`;

@@ -30,6 +30,11 @@ body {
         height: 32px;
         padding: 2px 8px;
 
+        &:disabled,
+        &[readonly] {
+            background-color: #2d3539;
+        }
+
        &[type="number"] {
             padding-right: 0 !important;
         }

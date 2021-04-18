@@ -38,6 +38,7 @@ export default class Project {
         let layer = {
             index: this.layers.length,
             id: generateGuid(),
+            length: 0,
             name: `Fil ${this.layers.length + 1}`,
             color: PaletteHelper.getDefaultColor(this.layers.length),
             visible: true

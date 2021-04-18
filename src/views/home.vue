@@ -267,6 +267,7 @@ export default {
     .main-page {
         width: calc(100vw - 270px);
         max-height: 100vh;
+        height: 100vh;
         overflow: scroll;
     }
 
