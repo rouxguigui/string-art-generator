@@ -1,8 +1,9 @@
 <template>
-    <div class="board" @wheel="$emit('wheel', $event)">
-        <div class="board-container" :style="{zoom: zoom}" :width="board.width * resolution + 40" :height="board.height * resolution + 60">
+    <div class="board">
+        <div class="board-container" :style="{zoom: zoom}" :width="board.width * resolution + 40"
+             :height="board.height * resolution + 60">
             <canvas id="board-canvas" :width="board.width * resolution" :height="board.height * resolution"
-                    @mousemove="onMouseMove" @click="onClick"></canvas>
+                    @mousemove="onMouseMove" @click="onClick" :class="{ 'record-mode': recordLayerPattern }"></canvas>
             <canvas id="overlay-canvas" :width="board.width * resolution" :height="board.height * resolution"></canvas>
         </div>
     </div>
@@ -14,7 +15,8 @@ import {CanvasHelper} from "@/helpers/CanvasHelper.js";
 export default {
     name: 'board',
     props: {
-        zoom: {type: Number}
+        zoom: {type: Number},
+        layerSelected: {}
     },
     data() {
         return {
@@ -30,7 +32,9 @@ export default {
     computed: {
         nailsBetweenLayers() {
             if (this.board.nailsBetweenLayers === -1) {
-                if (this.nails) {
+                if (this.layers.length === 1) {
+                    return 0;
+                } else if (this.nails) {
                     return this.nails.length / (this.layers.length - 1) / 2;
                 } else {
                     return 10;
@@ -63,8 +67,10 @@ export default {
             this.refreshOverlayRequired = true;
         },
         onClick(evt) {
+            const lastNailSelected = this.nailSelected;
             this.nailSelected = this.findNailByMouseEvt(evt);
             this.refreshOverlayRequired = true;
+            this.$emit('nail-selected', this.nailSelected, lastNailSelected);
         },
         findNailByMouseEvt(evt) {
             let radius = (this.board.nails.radius + 2) * this.resolution / 20;
@@ -119,6 +125,17 @@ export default {
                 this.overlay.context.arc(this.nailHover.x, this.nailHover.y, (this.board.nails.radius + 2) * this.resolution / 20, 0, Math.PI * 2);
                 this.overlay.context.fill();
                 this.overlay.context.fillText(this.nailHover.index + 1, this.nailHover.textX + 5, this.nailHover.textY + 5);
+            }
+            if (this.recordLayerPattern && this.layerSelected) {
+                this.overlay.context.fillStyle = 'red';
+                this.overlay.context.strokeStyle = 'red';
+                for (let step in this.layerSelected.patternSteps) {
+                    let nail = this.getNail(step.index);
+                    this.overlay.context.beginPath();
+                    this.overlay.context.arc(nail.x, nail.y, (this.board.nails.radius + 2) * this.resolution / 20, 0, Math.PI * 2);
+                    this.overlay.context.fill();
+                    this.overlay.context.fillText(nail.index + 1, nail.textX + 5, nail.textY + 5);
+                }
             }
             this.refreshOverlayRequired = false;
         },
@@ -188,7 +205,7 @@ export default {
             }
         },
         drawLayer(index, layer) {
-            if (!layer.visible) {
+            if (!layer.visible || this.recordLayerPattern) {
                 return false;
             }
 
@@ -199,15 +216,40 @@ export default {
 
             layer.length = 0;
             let startNail = Math.round(-index * this.nailsBetweenLayers);
+            let lastNail = this.getNail(startNail);
             this.canvas.context.beginPath();
             for (let i = 0; i < this.nails.length / 2; i++) {
-                let nail = this.getNail(startNail + i);
-                this.canvas.context.moveTo(nail.x, nail.y);
+                if (layer.pattern === 'default') {
+                    let nail = this.getNail(startNail + i);
+                    this.canvas.context.moveTo(nail.x, nail.y);
 
-                let nail2 = this.getNail(startNail + i * 2 + this.nails.length / 2);
-                this.canvas.context.lineTo(nail2.x, nail2.y);
+                    let nail2 = this.getNail(startNail + i * 2 + this.nails.length / 2);
+                    this.canvas.context.lineTo(nail2.x, nail2.y);
 
-                layer.length += Math.sqrt(Math.pow(nail2.cmX - nail.cmX, 2) + Math.pow(nail2.cmY - nail.cmY, 2)) * 2;
+                    layer.length += Math.sqrt(Math.pow(nail2.cmX - nail.cmX, 2) + Math.pow(nail2.cmY - nail.cmY, 2)) * 2;
+                } else {
+                    for (let step of layer.patternSteps) {
+                        this.canvas.context.moveTo(lastNail.x, lastNail.y);
+
+                        try {
+                            let nail = null;
+                            let delta = parseInt(step.delta);
+                            if (delta) {
+                                nail = this.getNail(lastNail.index + step.delta);
+                            } else {
+                                nail = this.getNail(startNail + eval(step.delta));
+                            }
+
+                            if (nail) {
+                                this.canvas.context.lineTo(nail.x, nail.y);
+                                layer.length += Math.sqrt(Math.pow(nail.cmX - lastNail.cmX, 2) + Math.pow(nail.cmY - lastNail.cmY, 2)) * 2;
+                                lastNail = nail;
+                            }
+                        } catch {
+                            layer.length = 0;
+                        }
+                    }
+                }
             }
             layer.length = Math.round(layer.length / 100);
             this.canvas.context.stroke();
@@ -249,13 +291,19 @@ export default {
 
 <style lang="scss" scoped>
 .board {
+    .board-container {
+        position: relative;
+    }
+
     canvas {
         margin: 50px 10px 10px 10px;
     }
 
-    .board-container {
-        position: relative;
-        //margin: 50px 10px 10px 10px;
+    #board-canvas {
+        &.record-mode {
+            outline: 2px solid red !important;
+        }
+
     }
 
     #overlay-canvas {

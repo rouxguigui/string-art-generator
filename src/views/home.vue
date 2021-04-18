@@ -45,8 +45,8 @@
         </b-navbar>
         <template  v-if="project">
             <properties-panel v-model="layerSelected"></properties-panel>
-            <main-page>
-                <board :zoom="zoom" @wheel="onWheelChanged"></board>
+            <main-page @wheel="onWheelChanged">
+                <board :zoom="zoom" @nail-selected="onNailSelected" v-model="layerSelected"></board>
             </main-page>
         </template>
         <template v-else>
@@ -103,8 +103,15 @@ export default {
         this.loadRecentProjects();
     },
     methods: {
+        onNailSelected(nail) {
+            if (nail && this.recordLayerPattern && this.layerSelected) {
+                this.layerSelected.patternSteps.push({
+                    nail: nail.index,
+                    delta: 0
+                });
+            }
+        },
         onWheelChanged(evt) {
-            console.log(evt);
             if (evt.deltaY > 0) {
                 this.setZoom(-0.1);
             } else {
@@ -146,7 +153,7 @@ export default {
                 return;
             }
             this.project = new Project();
-            for (let i = 0; i < 9; i++) {
+            for (let i = 0; i < 2; i++) {
                 this.project.addLayer();
             }
         },
@@ -272,13 +279,6 @@ export default {
         }
     }
 
-    .main-page {
-        width: calc(100vw - 270px);
-        max-height: 100vh;
-        height: 100vh;
-        overflow: scroll;
-    }
-
     .welcome-screen {
         display: flex;
         margin: 70px 0 0 270px;
@@ -352,11 +352,6 @@ export default {
 
     @media(max-width: 576px), (max-height: 576px) {
         padding-right: 0;
-
-        .main-page {
-            width: 100vw;
-            height: 100vh;
-        }
 
         .navbar.main-menu {
             padding: 0;

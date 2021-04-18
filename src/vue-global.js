@@ -43,6 +43,14 @@ Vue.mixin({
                 this.$store.state.project.layers = value;
             }
         },
+        recordLayerPattern: {
+            get() {
+                return this.$store.state.recordLayerPattern;
+            },
+            set(value) {
+                this.$store.commit('setRecordLayerPattern', value);
+            }
+        },
         isMobile() {
             return window.innerWidth < 576;
         },

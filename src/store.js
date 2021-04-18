@@ -11,6 +11,7 @@ export default new Vuex.Store({
             diagonalLines: false,
             nailNumbers: false
         },
+        recordLayerPattern: false,
         mobilePropertiesExtended: false
     },
     getters: {
@@ -18,6 +19,9 @@ export default new Vuex.Store({
     mutations: {
         setProject(state, project) {
             state.project = project;
+        },
+        setRecordLayerPattern(state, recordLayerPattern) {
+            state.recordLayerPattern = recordLayerPattern;
         },
         setSettings(state, settings) {
             state.settings = settings;
