@@ -124,12 +124,13 @@
                         <b-input type="color" class="ml-1" v-model="layerSelected.color"></b-input>
                     </b-input-group>
                     <b-input-group class="mt-1">
+                        <b-btn variant="default" class="mr-1" @click="$refs.colorPalette.show()"><i class="far fa-palette"></i></b-btn>
                         <b-input type="number" min="0" max="360" @change="updateLayerColorHSL" v-model.number="layerColorHSL[0]"></b-input>
-                        <b-input-group-text class="px-2">°</b-input-group-text>
+                        <b-input-group-text class="px-1">°</b-input-group-text>
                         <b-input type="number" min="0" max="100" @change="updateLayerColorHSL" v-model.number="layerColorHSL[1]"></b-input>
-                        <b-input-group-text class="px-2">%</b-input-group-text>
+                        <b-input-group-text class="px-1">%</b-input-group-text>
                         <b-input type="number" min="0" max="100" @change="updateLayerColorHSL" v-model.number="layerColorHSL[2]"></b-input>
-                        <b-input-group-text class="pl-2">%</b-input-group-text>
+                        <b-input-group-text class="pl-1">%</b-input-group-text>
                     </b-input-group>
                 </b-form-group>
                 <b-form-group class="property">
@@ -176,17 +177,22 @@
                 </b-btn>
             </div>
         </div>
+
+        <color-palette ref="colorPalette" v-if="layerSelected" v-model="layerSelected.color"></color-palette>
     </div>
 </template>
 
 <script>
+import ColorPalette from "@/components/color-palette.vue";
 import colorConvert from "color-convert";
 
 export default {
     name: "properties-panel",
+    components: {ColorPalette},
     data() {
         return {
             tabSelected: 'board',
+            showColorPalette: false,
             menuExtended: false
         }
     },

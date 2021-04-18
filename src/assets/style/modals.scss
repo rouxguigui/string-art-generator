@@ -81,22 +81,22 @@ body {
 
     }
     .modal-content {
-        color: #fff;
+        color: #b6c2cb;
+        background-color: #374145;
         border: none;
-        border-radius: 10px;
-        background: transparent;
+        border-radius: 4px;
 
         .modal-header {
-            margin: 0 15px;
             border: none;
             border-top-left-radius: inherit;
             border-top-right-radius: inherit;
 
             padding: 0.125em;
-            background: linear-gradient(to bottom, #315279 0%, #2a65a5 100%);
-            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.25);
+            color: white;
+            background: #444f54;
 
             .modal-title {
+                padding-top: 3px;
                 font-family: $theme-font;
                 font-size: 13pt;
                 letter-spacing: 1px;
@@ -107,9 +107,10 @@ body {
             }
 
             .close {
+                color: #b6c2cb;
                 text-shadow: none;
                 padding: 0;
-                margin: -5px;
+                margin: 0;
                 width: 32px;
                 height: 30px;
                 line-height: 18px;
@@ -120,7 +121,6 @@ body {
 
         .modal-body {
             border-radius: inherit;
-            background-color: #2d2d2d;
             //padding: 5px;
             box-shadow: 0 3px 5px rgba(0, 0, 0, 0.25);
             z-index: 1;

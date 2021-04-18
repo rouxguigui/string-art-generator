@@ -163,11 +163,6 @@ export default {
                 this.canvas.context.stroke();
             }
 
-            // this.canvas.context.fillStyle = `#000`;
-            // this.canvas.context.beginPath();
-            // this.canvas.context.arc(this.centerX, this.centerY, 5, 0, Math.PI * 2);
-            // this.canvas.context.fill();
-
             this.canvas.context.textAlign = 'center';
             this.canvas.context.textBaseline = 'middle';
             this.canvas.context.fillStyle = this.board.nails.color;
@@ -255,7 +250,7 @@ export default {
 
     .board-container {
         position: relative;
-        margin: 70px 30px 30px;
+        margin: 50px 10px 10px 10px;
     }
 
     #overlay-canvas {
@@ -263,12 +258,6 @@ export default {
         top: 0;
         left: 0;
         pointer-events: none;
-    }
-
-    @media(max-width: 576px) {
-        .board-container {
-            margin: 50px 10px 10px 10px;
-        }
     }
 }
 </style>

@@ -61,6 +61,11 @@ body {
 
     .property {
         margin-bottom: 5px;
+
+        .btn {
+            height: 32px;
+        }
+
         .input-group-text {
             padding: 0;
             background: none;

@@ -10,5 +10,24 @@
         transition: 150ms;
         box-shadow: none;
         border: none;
+
+        &.btn-default {
+            color: #fff;
+            background-color: #49545b;
+
+            &:hover {
+                color: white;
+                background-color: #3096cf;
+            }
+        }
+
+        &.btn-none {
+            color: #bdc7cb;
+
+            &:hover {
+                color: white;
+                background-color: #59686d;
+            }
+        }
     }
 }
