@@ -46,7 +46,7 @@
         <template  v-if="project">
             <properties-panel v-model="layerSelected"></properties-panel>
             <main-page @wheel="onWheelChanged">
-                <board :zoom="zoom" @nail-selected="onNailSelected" v-model="layerSelected"></board>
+                <board ref="board" :zoom="zoom" @nail-selected="onNailSelected" :layer-selected="layerSelected"></board>
             </main-page>
         </template>
         <template v-else>
@@ -109,6 +109,7 @@ export default {
                     nail: nail.index,
                     delta: 0
                 });
+                this.$refs.board.refreshScreenAndOverlay();
             }
         },
         onWheelChanged(evt) {

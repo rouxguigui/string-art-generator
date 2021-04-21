@@ -42,6 +42,7 @@ export default class Project {
             name: `Fil ${this.layers.length + 1}`,
             color: PaletteHelper.getDefaultColor(this.layers.length),
             visible: true,
+            startingNail: 'auto',
             pattern: 'default',
             patternSteps: []
         };

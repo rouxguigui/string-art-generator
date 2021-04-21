@@ -109,15 +109,6 @@ export default {
             this.overlay.context.textAlign = 'center';
             this.overlay.context.textBaseline = 'middle';
             this.overlay.context.font = '15pt Arial';
-            if (this.nailSelected) {
-                this.overlay.context.fillStyle = 'magenta';
-                this.overlay.context.strokeStyle = 'magenta';
-                this.overlay.context.beginPath();
-                this.overlay.context.arc(this.nailSelected.x, this.nailSelected.y, (this.board.nails.radius + 2) * this.resolution / 20, 0, Math.PI * 2);
-                this.overlay.context.fill();
-                this.overlay.context.fillText(this.nailSelected.index + 1, this.nailSelected.textX + 5, this.nailSelected.textY + 5);
-
-            }
             if (this.nailHover) {
                 this.overlay.context.fillStyle = '#c97413';
                 this.overlay.context.strokeStyle = '#c97413';
@@ -129,13 +120,23 @@ export default {
             if (this.recordLayerPattern && this.layerSelected) {
                 this.overlay.context.fillStyle = 'red';
                 this.overlay.context.strokeStyle = 'red';
-                for (let step in this.layerSelected.patternSteps) {
-                    let nail = this.getNail(step.index);
+                let index = 0;
+                for (let step of this.layerSelected.patternSteps) {
+                    let nail = this.getNail(step.nail);
                     this.overlay.context.beginPath();
                     this.overlay.context.arc(nail.x, nail.y, (this.board.nails.radius + 2) * this.resolution / 20, 0, Math.PI * 2);
                     this.overlay.context.fill();
-                    this.overlay.context.fillText(nail.index + 1, nail.textX + 5, nail.textY + 5);
+                    this.overlay.context.fillText(index + 1, nail.textX + 5, nail.textY + 5);
+                    index++;
                 }
+            } else if (this.nailSelected) {
+                this.overlay.context.fillStyle = 'magenta';
+                this.overlay.context.strokeStyle = 'magenta';
+                this.overlay.context.beginPath();
+                this.overlay.context.arc(this.nailSelected.x, this.nailSelected.y, (this.board.nails.radius + 2) * this.resolution / 20, 0, Math.PI * 2);
+                this.overlay.context.fill();
+                this.overlay.context.fillText(this.nailSelected.index + 1, this.nailSelected.textX + 5, this.nailSelected.textY + 5);
+
             }
             this.refreshOverlayRequired = false;
         },
@@ -216,6 +217,9 @@ export default {
 
             layer.length = 0;
             let startNail = Math.round(-index * this.nailsBetweenLayers);
+            if (layer.startingNail !== 'auto' && !isNaN(parseInt(layer.startingNail))) {
+                startNail = parseInt(layer.startingNail);
+            }
             let lastNail = this.getNail(startNail);
             this.canvas.context.beginPath();
             for (let i = 0; i < this.nails.length / 2; i++) {
@@ -264,6 +268,10 @@ export default {
         },
         getNail(index) {
             return this.nails[this.modulo(Math.round(index), this.nails.length)];
+        },
+        refreshScreenAndOverlay() {
+            this.refreshRequired = true;
+            this.refreshOverlayRequired = true;
         }
     },
     watch: {

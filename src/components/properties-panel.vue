@@ -87,9 +87,7 @@
                     <b-form-group class="property">
                         <b-input-group>
                             <b-input-group-text>Nombre</b-input-group-text>
-                            <b-select v-model.number="board.nails.quantity">
-                                <option v-for="i in 999" :value="i + 1" :key="'nail-' + i">{{ i + 1 }}</option>
-                            </b-select>
+                            <b-input type="number" min="1" max="999" step="10" v-model.number="board.nails.quantity"></b-input>
                         </b-input-group>
                     </b-form-group>
                     <b-form-group class="property">
@@ -154,6 +152,16 @@
                             <b-select v-model="layerSelected.pattern">
                                 <option value="default">Défaut</option>
                                 <option value="custom">Personnalisé</option>
+                            </b-select>
+                        </b-input-group>
+                    </b-form-group>
+                    <b-form-group class="property">
+                        <b-input-group>
+                            <b-input-group-text>1er clou</b-input-group-text>
+                            <b-select v-model.number="layerSelected.startingNail">
+                                <option value="auto">Automatique</option>
+                                <option value="0">Clou 1</option>
+                                <option v-for="i in 150" :value="i" :key="'start-' + i">Clou {{ i + 1 }}</option>
                             </b-select>
                         </b-input-group>
                     </b-form-group>
