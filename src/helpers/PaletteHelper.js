@@ -110,4 +110,28 @@ export default class PaletteHelper {
     static getDefaultColor(index) {
         return this.defaultPalette[index % this.defaultPalette.length];
     }
+
+    static findColor(color) {
+        if (!color) {
+            return null;
+        }
+        for (let category of this.gutermannPalette) {
+            const colorInPalette = category.find(c => c.color === color);
+            if (colorInPalette)
+                return colorInPalette;
+        }
+        return null;
+    }
+
+    static getColorByName(name) {
+        if (!name) {
+            return null;
+        }
+        for (let category of this.gutermannPalette) {
+            const colorInPalette = category.find(c => c.name === name);
+            if (colorInPalette)
+                return colorInPalette;
+        }
+        return null;
+    }
 }

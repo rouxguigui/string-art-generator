@@ -118,6 +118,7 @@ export default {
             } else {
                 this.setZoom(0.1);
             }
+            evt.preventDefault();
         },
         loadRecentProjects() {
             let projects = localStorage.getItem('projects');
