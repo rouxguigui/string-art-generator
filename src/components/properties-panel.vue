@@ -37,8 +37,9 @@
                         <b-input-group>
                             <b-input-group-text>Qualité</b-input-group-text>
                             <b-select v-model.number="board.resolution">
-                                <option v-for="i in 50" :value="i + 1" :key="'resolution-' + i">{{ i + 1 }}</option>
+                                <option v-for="i in 300" :value="i + 1" :key="'resolution-' + i">{{ i + 1 }}</option>
                             </b-select>
+                            <b-input-group-text class="pl-2">dpi</b-input-group-text>
                         </b-input-group>
                     </b-form-group>
                 </div>
@@ -68,6 +69,9 @@
                             </b-select>
                         </b-input-group>
                     </b-form-group>
+                    <div class="f-10 f-500 mb-2 text-right text-light" v-if="board.nailsBetweenLayers === -1">
+                        Calculé {{roundTo1(project.getAutoNailsBetweenLayers())}} clous
+                    </div>
                     <b-form-group class="property">
                         <b-input-group>
                             <b-input-group-text>Angle départ</b-input-group-text>
@@ -318,6 +322,9 @@ export default {
         },
         updateLayerColorHSL() {
             this.layerSelected.color = '#' + colorConvert.hsl.hex(this.layerColorHSL);
+        },
+        roundTo1(value) {
+            return Math.round(value * 10) / 10;
         }
     }
 }

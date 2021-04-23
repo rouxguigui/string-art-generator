@@ -32,19 +32,13 @@ export default {
     computed: {
         nailsBetweenLayers() {
             if (this.board.nailsBetweenLayers === -1) {
-                if (this.layers.length === 1) {
-                    return 0;
-                } else if (this.nails) {
-                    return this.nails.length / (this.layers.length - 1) / 2;
-                } else {
-                    return 10;
-                }
+                return this.project.getAutoNailsBetweenLayers();
             } else {
                 return this.board.nailsBetweenLayers;
             }
         },
         resolution() {
-            return this.board.resolution;
+            return this.board.resolution / 2.54;
         },
         centerX() {
             return this.board.width * this.resolution / 2;
@@ -98,7 +92,9 @@ export default {
             this.canvas.clear(this.board.backgroundColor);
             this.generateNails();
             this.drawGrid();
-            this.drawLayers();
+            if (!this.settings.printMode) {
+                this.drawLayers();
+            }
             this.drawNails();
             this.drawOverlay();
             this.refreshRequired = false;
@@ -182,16 +178,40 @@ export default {
                 this.canvas.context.lineTo(this.board.width * this.resolution, 0);
                 this.canvas.context.stroke();
             }
+
+            if (this.settings.printMode) {
+                this.canvas.context.strokeStyle = `#000`;
+                this.canvas.context.beginPath();
+                this.canvas.context.moveTo(this.centerX - 10, this.centerY);
+                this.canvas.context.lineTo(this.centerX + 10, this.centerY);
+                this.canvas.context.moveTo(this.centerX, this.centerY - 10);
+                this.canvas.context.lineTo(this.centerX, this.centerY + 10);
+                this.canvas.context.stroke();
+            }
         },
         drawNails() {
             this.canvas.context.textAlign = 'center';
             this.canvas.context.textBaseline = 'middle';
             this.canvas.context.fillStyle = this.board.nails.color;
+            this.canvas.context.strokeStyle = this.board.nails.color;
+            this.canvas.context.lineWidth = 1;
+
+            if (this.settings.printMode) {
+                this.canvas.context.beginPath();
+                this.canvas.context.arc(this.centerX, this.centerY, this.board.radius * this.resolution, 0, Math.PI * 2);
+                this.canvas.context.stroke();
+            }
             let index = 0;
             for (let nail of this.nails) {
                 this.canvas.context.beginPath();
-                this.canvas.context.arc(nail.x, nail.y, this.board.nails.radius * this.resolution / 20, 0, Math.PI * 2);
-                this.canvas.context.fill();
+                if (this.settings.printMode) {
+                    this.canvas.context.moveTo(this.centerX + (nail.x - this.centerX) * 0.98, this.centerY + (nail.y - this.centerY) * 0.98);
+                    this.canvas.context.lineTo(nail.x, nail.y);
+                    this.canvas.context.stroke();
+                } else {
+                    this.canvas.context.arc(nail.x, nail.y, this.board.nails.radius * this.resolution / 20, 0, Math.PI * 2);
+                    this.canvas.context.fill();
+                }
                 if (this.settings.nailNumbers) {
                     this.canvas.context.fillText(index + 1, nail.textX + 5, nail.textY + 5);
                 }

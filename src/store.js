@@ -7,9 +7,11 @@ export default new Vuex.Store({
     state: {
         project: null,
         settings: {
+            showCenter: false,
             middleLines: false,
             diagonalLines: false,
-            nailNumbers: false
+            nailNumbers: false,
+            printMode: false
         },
         recordLayerPattern: false,
         mobilePropertiesExtended: false

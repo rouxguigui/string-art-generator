@@ -12,7 +12,7 @@ export default class Project {
             width: 55.88,
             height: 55.88,
             radius: 25,
-            resolution: 25,
+            resolution: 72,
             shape: `circle`,
             startingAngle: 0,
             clockwise: true,
@@ -28,7 +28,7 @@ export default class Project {
         };
 
         if (window.innerWidth < 576) {
-            this.board.resolution = 10;
+            this.board.resolution = 36;
         }
 
         this.layers = [];
@@ -48,6 +48,16 @@ export default class Project {
         };
         this.layers.push(layer);
         return layer;
+    }
+
+    getAutoNailsBetweenLayers() {
+        if (this.layers.length === 1) {
+            return 0;
+        } else if (this.board.nails) {
+            return this.board.nails.quantity / (this.layers.length - 1) / 2;
+        } else {
+            return 10;
+        }
     }
 
     removeLayer(layer) {

@@ -12,9 +12,14 @@
                 <b-dropdown-item @click="saveOrSaveAs">Enregistrer</b-dropdown-item>
                 <b-dropdown-item @click="saveAs">Enregistrer Sous</b-dropdown-item>
                 <b-dropdown-divider></b-dropdown-divider>
+                <b-dropdown-item @click="print"><i class="far fa-print"></i> Imprimer</b-dropdown-item>
+                <b-dropdown-divider></b-dropdown-divider>
                 <b-dropdown-item @click="closeProject">Fermer le projet</b-dropdown-item>
             </b-dropdown>
             <b-dropdown v-if="!isMobile && !isMobileLandscape" text="Affichage" no-caret>
+                <b-dropdown-item @click="$store.state.settings.showCenter = !$store.state.settings.showCenter">
+                    <b-checkbox :checked="$store.state.settings.showCenter">Afficher le centre</b-checkbox>
+                </b-dropdown-item>
                 <b-dropdown-item @click="$store.state.settings.middleLines = !$store.state.settings.middleLines">
                     <b-checkbox :checked="$store.state.settings.middleLines">Afficher repère central</b-checkbox>
                 </b-dropdown-item>
@@ -23,6 +28,9 @@
                 </b-dropdown-item>
                 <b-dropdown-item @click="$store.state.settings.nailNumbers = !$store.state.settings.nailNumbers">
                     <b-checkbox :checked="$store.state.settings.nailNumbers">Afficher le numéro des clous</b-checkbox>
+                </b-dropdown-item>
+                <b-dropdown-item @click="$store.state.settings.printMode = !$store.state.settings.printMode">
+                    <b-checkbox :checked="$store.state.settings.printMode">Mode d'impression</b-checkbox>
                 </b-dropdown-item>
             </b-dropdown>
                 <b-btn variant="transparent" @click.stop="saveOrSaveAs"><i class="far fa-save"></i></b-btn>
@@ -198,6 +206,21 @@ export default {
             }
             this.project = null;
             this.loadRecentProjects();
+        },
+        print() {
+            if (this.settings.printMode) {
+                this.$store.state.settings.showCenter = false;
+                this.$store.state.settings.middleLines = false;
+                this.$store.state.settings.diagonalLines = false;
+                this.$store.state.settings.nailNumbers = false;
+                this.$store.state.settings.printMode = false;
+            } else {
+                this.$store.state.settings.showCenter = true;
+                this.$store.state.settings.middleLines = true;
+                this.$store.state.settings.diagonalLines = true;
+                this.$store.state.settings.nailNumbers = true;
+                this.$store.state.settings.printMode = true;
+            }
         },
         setZoom(delta) {
             this.zoom = Math.max(Math.min(this.zoom + delta, 3), 0.1);
