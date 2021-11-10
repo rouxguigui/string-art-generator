@@ -4,7 +4,7 @@
             <b-col>
                 <b-tabs :content-class="'view-' + view">
                     <b-tab title="Gutermann">
-                        <div class="palette">
+                        <div class="palette rectangles">
                             <div class="column" v-for="(column, index) in PaletteHelper.gutermannPalette" :key="'column' + index">
                                 <div class="color" v-for="color in column" :key="color" @click="$emit('input', color.color)"
                                      :title="color.name" :style="{backgroundColor: color.color}"
@@ -53,7 +53,7 @@ export default {
         return {
             visible: false,
             originalColor: null,
-            view: `default`,
+            view: `list`,
             PaletteHelper
         }
     },
@@ -151,6 +151,13 @@ export default {
             transform: scale(0.95);
         }
     }
+
+  &.rectangles {
+    .color {
+      width: 20px;
+      border-radius: 3px;
+    }
+  }
 }
 
 .view-large {
