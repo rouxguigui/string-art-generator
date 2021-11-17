@@ -115,6 +115,14 @@ export default {
         }
     }
 }
+@media(min-width: 1280px) {
+    .color-palette {
+        .modal-dialog.modal-lg {
+          max-width: 950px;
+          width: 950px;
+        }
+    }
+}
 </style>
 <style lang="scss" scoped>
 .palette {
@@ -174,14 +182,15 @@ export default {
 .view-list-square,
 .view-list {
     .palette {
+      width: 650px;
 
         .column {
-            width: 70px;
+            width: 65px;
         }
 
         .color {
             display: inline-block;
-            width: 65px;
+            width: 60px;
             height: 24px;
             margin: 0 0 3px 3px;
             border-radius: 3px;
@@ -191,6 +200,7 @@ export default {
                 position: absolute;
                 top: 0;
                 left: 0;
+                font-size: 10pt;
                 height: 100%;
                 padding: 0 5px;
                 border-top-left-radius: inherit;
