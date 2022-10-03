@@ -2,7 +2,7 @@
     <div id="home">
         <b-navbar class="main-menu" variant="dark" fixed="top">
             <b-btn variant="transparent" v-if="isMobile" @click="$store.state.mobilePropertiesExtended = !$store.state.mobilePropertiesExtended">
-                <i class="far fa-bars"></i>
+                <i class="fas fa-bars"></i>
             </b-btn>
             <template v-if="project">
             <b-dropdown text="Menu" no-caret>
@@ -12,11 +12,14 @@
                 <b-dropdown-item @click="saveOrSaveAs">Enregistrer</b-dropdown-item>
                 <b-dropdown-item @click="saveAs">Enregistrer Sous</b-dropdown-item>
                 <b-dropdown-divider></b-dropdown-divider>
-                <b-dropdown-item @click="print"><i class="far fa-print"></i> Imprimer</b-dropdown-item>
+                <b-dropdown-item @click="print"><i class="fas fa-print"></i> Imprimer</b-dropdown-item>
                 <b-dropdown-divider></b-dropdown-divider>
                 <b-dropdown-item @click="closeProject">Fermer le projet</b-dropdown-item>
             </b-dropdown>
             <b-dropdown v-if="!isMobile && !isMobileLandscape" text="Affichage" no-caret>
+                <b-dropdown-item @click="$store.state.settings.showMargins = !$store.state.settings.showMargins">
+                    <b-checkbox :checked="$store.state.settings.showMargins">Afficher les marges</b-checkbox>
+                </b-dropdown-item>
                 <b-dropdown-item @click="$store.state.settings.showCenter = !$store.state.settings.showCenter">
                     <b-checkbox :checked="$store.state.settings.showCenter">Afficher le centre</b-checkbox>
                 </b-dropdown-item>
@@ -33,13 +36,13 @@
                     <b-checkbox :checked="$store.state.settings.printMode">Mode d'impression</b-checkbox>
                 </b-dropdown-item>
             </b-dropdown>
-                <b-btn variant="transparent" @click.stop="saveOrSaveAs"><i class="far fa-save"></i></b-btn>
-                <b-btn variant="transparent" disabled @click.stop=""><i class="far fa-undo"></i></b-btn>
-                <b-btn variant="transparent" disabled @click.stop=""><i class="far fa-redo"></i></b-btn>
+                <b-btn variant="transparent" @click.stop="saveOrSaveAs"><i class="fas fa-save"></i></b-btn>
+                <b-btn variant="transparent" disabled @click.stop=""><i class="fas fa-undo"></i></b-btn>
+                <b-btn variant="transparent" disabled @click.stop=""><i class="fas fa-redo"></i></b-btn>
                 <div class="separator"></div>
-                <b-btn variant="transparent" @click.stop="setZoom(-.1)"><i class="far fa-search-minus"></i></b-btn>
+                <b-btn variant="transparent" @click.stop="setZoom(-.1)"><i class="fas fa-search-minus"></i></b-btn>
                 <div class="zoom">{{Math.round(zoom * 100)}}%</div>
-                <b-btn variant="transparent" @click.stop="setZoom(.1)"><i class="far fa-search-plus"></i></b-btn>
+                <b-btn variant="transparent" @click.stop="setZoom(.1)"><i class="fas fa-search-plus"></i></b-btn>
 
                 <template v-if="!isMobile">
                     <div class="separator"></div>
@@ -61,7 +64,7 @@
             <div class="welcome-screen">
                 <b-container>
                     <template v-if="!isMobile">
-                        <h5 class="">String Art Generator v0.1</h5>
+                        <h5 class="">String Art Generator v0.2</h5>
                         <hr>
                     </template>
                     <div class="buttons">
@@ -166,6 +169,7 @@ export default {
             for (let i = 0; i < 2; i++) {
                 this.project.addLayer();
             }
+            this.project.addNailsLayer();
         },
         openProject(project) {
             this.project = new Project();

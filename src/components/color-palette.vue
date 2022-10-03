@@ -27,10 +27,10 @@
                 <b-btn class="mt-2" block variant="default" @click="cancel">Annuler</b-btn>
 
                 <b-button-group class="mt-2 mb-5">
-                    <b-btn variant="default" @click="view = 'default'" :class="{'active': view === 'default'}"><i class="far fa-th"></i></b-btn>
-                    <b-btn variant="default" @click="view = 'large'" :class="{'active': view === 'large'}"><i class="far fa-th-large"></i></b-btn>
-                    <b-btn variant="default" @click="view = 'list'" :class="{'active': view === 'list'}"><i class="far fa-list-ul"></i></b-btn>
-                    <b-btn variant="default" @click="view = 'list-square'" :class="{'active': view === 'list-square'}"><i class="far fa-list"></i></b-btn>
+                    <b-btn variant="default" @click="view = 'default'" :class="{'active': view === 'default'}"><i class="fas fa-th"></i></b-btn>
+                    <b-btn variant="default" @click="view = 'large'" :class="{'active': view === 'large'}"><i class="fas fa-th-large"></i></b-btn>
+                    <b-btn variant="default" @click="view = 'list'" :class="{'active': view === 'list'}"><i class="fas fa-list-ul"></i></b-btn>
+                    <b-btn variant="default" @click="view = 'list-square'" :class="{'active': view === 'list-square'}"><i class="fas fa-list"></i></b-btn>
                 </b-button-group>
 
                 <b-input type="text" maxlength="7" v-model="inputValue" style="position: absolute; bottom: 0; left: 15px; width: 90px"></b-input>

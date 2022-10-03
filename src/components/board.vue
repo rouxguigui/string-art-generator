@@ -1,10 +1,9 @@
 <template>
     <div class="board">
-        <div class="board-container" :style="{zoom: zoom}" :width="board.width * resolution + 40"
-             :height="board.height * resolution + 60">
-            <canvas id="board-canvas" :width="board.width * resolution" :height="board.height * resolution"
+        <div class="board-container" :style="{zoom: zoom}" :width="convertToPx(board.width) + 40" :height="convertToPx(board.height) + 60">
+            <canvas id="board-canvas" :width="convertToPx(board.width)" :height="convertToPx(board.height)"
                     @mousemove="onMouseMove" @click="onClick" :class="{ 'record-mode': recordLayerPattern }"></canvas>
-            <canvas id="overlay-canvas" :width="board.width * resolution" :height="board.height * resolution"></canvas>
+            <canvas id="overlay-canvas" :width="convertToPx(board.width)" :height="convertToPx(board.height)"></canvas>
         </div>
     </div>
 </template>
@@ -41,10 +40,10 @@ export default {
             return this.board.resolution / 2.54;
         },
         centerX() {
-            return this.board.width * this.resolution / 2;
+            return this.convertToPx(this.board.width) / 2;
         },
         centerY() {
-            return this.board.width * this.resolution / 2;
+            return this.convertToPx(this.board.width) / 2;
         }
     },
     mounted() {
@@ -56,6 +55,9 @@ export default {
         this.updateLoop();
     },
     methods: {
+        convertToPx(size) {
+           return size / 10 * this.resolution / 2.54;// 2.54 for inch to cm, then cm to mm
+        },
         onMouseMove(evt) {
             this.nailHover = this.findNailByMouseEvt(evt);
             this.refreshOverlayRequired = true;
@@ -105,6 +107,16 @@ export default {
             this.overlay.context.textAlign = 'center';
             this.overlay.context.textBaseline = 'middle';
             this.overlay.context.font = '15pt Arial';
+
+            // Margins
+            if (this.$store.state.settings.showMargins) {
+                this.overlay.context.strokeStyle = 'magenta';
+                this.overlay.context.setLineDash([5, 5]);
+                this.overlay.context.lineHeight = 1;
+                this.overlay.context.strokeRect(this.convertToPx(this.board.marginX), this.convertToPx(this.board.marginY),
+                        this.convertToPx(this.board.width - this.board.marginX * 2), this.convertToPx(this.board.height - this.board.marginY * 2));
+            }
+
             if (this.nailHover) {
                 this.overlay.context.fillStyle = '#c97413';
                 this.overlay.context.strokeStyle = '#c97413';

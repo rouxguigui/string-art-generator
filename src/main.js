@@ -4,8 +4,7 @@ import store from './store'
 
 import { BootstrapVue } from 'bootstrap-vue'
 import '@fortawesome/fontawesome-pro/scss/fontawesome.scss'
-import '@fortawesome/fontawesome-pro/scss/regular.scss'
-import '@fortawesome/fontawesome-pro/scss/light.scss'
+import '@fortawesome/fontawesome-pro/scss/solid.scss'
 import './vue-global';
 import draggable from 'vuedraggable';
 import VueDragscroll from 'vue-dragscroll'

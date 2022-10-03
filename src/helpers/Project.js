@@ -1,3 +1,4 @@
+import NailsLayer from "@/helpers/NailsLayer.js";
 import PaletteHelper from "@/helpers/PaletteHelper.js";
 import {generateGuid} from "@/utils.js";
 
@@ -7,14 +8,23 @@ export default class Project {
         this.name = name;
         this.saved = false;
 
+        this.info = {
+            version: 0.2,
+            creationDate: new Date(),
+            lastModification: new Date()
+        }
+
         this.board = {
             backgroundColor: '#ffffff',
-            width: 55.88,
-            height: 55.88,
+            width: 560,
+            height: 560,
             radius: 25,
             resolution: 72,
-            shape: `circle`,
+            unit: `mm`,
+            shape: `square`,
             startingAngle: 0,
+            marginX: 25,// to display borders around
+            marginY: 25,// to display borders around
             clockwise: true,
             nails: {
                 radius: 3,
@@ -31,12 +41,14 @@ export default class Project {
             this.board.resolution = 36;
         }
 
+        this.nailsLayers = [];
         this.layers = [];
     }
 
     addLayer() {
         let layer = {
             index: this.layers.length,
+            type: `string`,
             id: generateGuid(),
             length: 0,
             name: `Fil ${this.layers.length + 1}`,
@@ -50,6 +62,12 @@ export default class Project {
         return layer;
     }
 
+    addNailsLayer() {
+        let nailsLayer = new NailsLayer(this.board, this.nailsLayers.length);
+        this.nailsLayers.push(nailsLayer);
+        return nailsLayer;
+    }
+
     getAutoNailsBetweenLayers() {
         if (this.layers.length === 1) {
             return 0;
@@ -61,7 +79,11 @@ export default class Project {
     }
 
     removeLayer(layer) {
-        this.layers.splice(this.layers.indexOf(layer), 1);
+        if (layer.type === `nails`) {
+            this.nailsLayers.splice(this.nailsLayers.indexOf(layer), 1);
+        } else if (layer.type === `string`) {
+            this.layers.splice(this.layers.indexOf(layer), 1);
+        }
     }
 
     getRecentProjects() {
@@ -102,10 +124,13 @@ export default class Project {
     }
 
     createLocalSave() {
+        this.info.lastModification = new Date();
         let json = {
             id: this.id,
             name: this.name,
             board: this.board,
+            info: this.info,
+            nailsLayers: this.nailsLayers,
             layers: this.layers
         };
         json = JSON.stringify(json);
@@ -123,6 +148,19 @@ export default class Project {
             this.id = project.id;
             this.board = project.board;
             this.layers = project.layers;
+            if (project.info) {
+                this.info = project.info;
+                this.nailsLayers = project.nailsLayers;
+            } else {
+                this.nailsLayers = [];
+                this.addNailsLayer();
+                // Switch from cm to mm
+                this.board.width * 10;
+                this.board.height * 10;
+                for (let layer of project.layers) {
+                    layer.type = `string`;
+                }
+            }
             this.saved = true;
         }
     }

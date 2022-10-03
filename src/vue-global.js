@@ -43,6 +43,18 @@ Vue.mixin({
                 this.$store.state.project.layers = value;
             }
         },
+        nailsLayers: {
+            get() {
+                if (this.$store.state.project) {
+                    return this.$store.state.project.nailsLayers;
+                } else {
+                    return null;
+                }
+            },
+            set(value) {
+                this.$store.state.project.nailsLayers = value;
+            }
+        },
         recordLayerPattern: {
             get() {
                 return this.$store.state.recordLayerPattern;
