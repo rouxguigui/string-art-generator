@@ -61,6 +61,14 @@
                         <b-input type="text" @change="update" v-model="layerSelected.settings.polar.formula"/>
                     </b-input-group>
                 </b-form-group>
+                <b-form-group class="property">
+                    <b-input-group>
+                        <b-input-group-text title="Point central" style="width: 33px">Min</b-input-group-text>
+                        <b-input type="number" @change="update" v-model.number="layerSelected.settings.polar.minT"></b-input>
+                        <b-input-group-text class="mx-2">max</b-input-group-text>
+                        <b-input type="number" @change="update" v-model.number="layerSelected.settings.polar.maxT"></b-input>
+                    </b-input-group>
+                </b-form-group>
             </template>
             <template v-else-if="layerSelected.settings.shape === `cartesian`">
                 <b-form-group class="property" label="Formule">

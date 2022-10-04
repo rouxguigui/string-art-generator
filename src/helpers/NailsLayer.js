@@ -1,6 +1,5 @@
 import Layer from "@/helpers/Layer.js";
 import Nail from "@/helpers/Nail.js";
-import exactMath from "exact-math";
 import {evaluate} from "mathjs"
 import {roundTo1} from "@/utils.js";
 
@@ -51,8 +50,10 @@ export default class NailsLayer extends Layer {
                 maxX: 250
             },
             polar: {
-                formula: `500*sin(4*t)`,
-                formulaX: `1.25*e(0.2-t)`,
+                formula: `50*exp(0.25*t)`,
+                // formula: `500*sin(4*t)`,
+                minT: 0,
+                maxT: Math.PI * 2
             }
         };
         this.nails = [];
@@ -119,6 +120,7 @@ export default class NailsLayer extends Layer {
         let x = 0;
         let y = 0;
         let progress = 0;
+        let formula;
 
         if (this.settings.shape === `circle`) {
             if (this.settings.circle.center.x !== `auto`) {
@@ -161,7 +163,8 @@ export default class NailsLayer extends Layer {
                 progress = i / this.settings.nails.quantity;
                 x = this.settings.cartesian.minX * (1 - progress) + this.settings.cartesian.maxX * progress;
                 try {
-                    y = exactMath.formula(this.settings.cartesian.formula.replace(/x/gi, x));
+                    formula = this.settings.cartesian.formula.replace(/x/gi, x);
+                    y = evaluate(formula);
                 } catch(e) {
                     console.warn(e);
                 }
@@ -169,10 +172,10 @@ export default class NailsLayer extends Layer {
             }
         } else if (this.settings.shape === `polar`) {
             let r;
-            let formula;
             for (i = 0; i < this.settings.nails.quantity; i++) {
                 try {
-                    angle = Math.PI * 2 * i / this.settings.nails.quantity;
+                    progress = i / this.settings.nails.quantity;
+                    angle = this.settings.polar.minT * progress + this.settings.polar.maxT * (1 - progress);
                     formula = this.settings.polar.formula.replace(/t/gi, angle);
                     r = evaluate(formula);
                     x = r * Math.cos(angle);

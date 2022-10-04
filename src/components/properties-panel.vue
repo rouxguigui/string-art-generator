@@ -31,7 +31,7 @@
                         {{ layer.name }}
                     </div>
                     <div class="color icon">
-                        <i class="fas fa-map-pin"/>
+                        <i class="fas fa-map-pin faw" :style="{color: layer.settings.nails.color}"/>
                     </div>
                 </div>
                 <draggable v-model="stringLayers" :handle="isMobile || isMobileLandscape ? '.handle': null" ghost-class="list-item-ghost" drag-class="list-item-drag" animation="150">
@@ -48,7 +48,8 @@
                             {{ layer.name }}
                         </div>
                         <div class="color">
-                            <i :style="{color: layer.settings.color}">⬤</i>
+                            <i class="fas fa-reel faw" :style="{color: layer.settings.color}"/>
+<!--                            <i :style="{color: layer.settings.color}">⬤</i>-->
                         </div>
                     </div>
                 </draggable>
