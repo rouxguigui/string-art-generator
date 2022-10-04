@@ -1,4 +1,6 @@
 import Layer from "@/helpers/Layer.js";
+import Nail from "@/helpers/Nail.js";
+import {roundTo1} from "@/utils.js";
 
 export default class NailsLayer extends Layer {
     constructor(project, index) {
@@ -7,11 +9,12 @@ export default class NailsLayer extends Layer {
         this.settings = {
             shape: `circle`,
             autoResize: true,
-            distanceBetweenNails: `auto`,
             nails: {
                 radius: 1.5, // in mm
                 color: '#aaaaaa',
-                quantity: 320
+                positionBy: `quantity`,
+                quantity: 320,
+                distanceBetweenNails: `auto`,
             },
             circle: {
                 center: {
@@ -42,10 +45,44 @@ export default class NailsLayer extends Layer {
             }
         };
         this.nails = [];
+        this.updateDistanceBetweenNails();
     }
 
     convertToPx(size) {
         return this.project.convertToPx(size);
+    }
+
+    getShapePerimeter() {
+        switch (this.settings.shape) {
+            case `circle`:
+                return 2 * Math.PI * this.settings.circle.radius;
+            case `rectangle`:
+                return (this.settings.rectangle.width + this.settings.rectangle.height) * 2;
+            case `line`:
+                return Math.sqrt(Math.pow(this.settings.line.end.x - this.settings.line.start.x, 2) + Math.pow(this.settings.line.end.y - this.settings.rectangle.start.y, 2));
+        }
+    }
+
+    updateDistanceBetweenNails() {
+        if (this.shape === `manual`) {
+            return false;
+        }
+        this.settings.positionBy = `quantity`;
+        this.settings.nails.distanceBetweenNails = roundTo1(this.getShapePerimeter() / this.settings.nails.quantity);
+    }
+
+    updateNailsQuantity() {
+        if (this.shape === `manual`) {
+            return false;
+        }
+        this.settings.positionBy = `distance`;
+        this.settings.nails.quantity = roundTo1(this.getShapePerimeter() / this.settings.nails.distanceBetweenNails);
+    }
+
+    addNail(mmX, mmY) {
+        const nail = new Nail(this, this.nails.length, mmX, mmY);
+        this.nails.push(nail);
+        return nail;
     }
 
     getNails() {
@@ -62,52 +99,43 @@ export default class NailsLayer extends Layer {
             if (centerY === `auto`) {
                 centerY = this.project.getCenterY();
             }
-            const radius = this.convertToPx(this.settings.circle.radius);
 
             for (let i = 0; i < this.settings.nails.quantity; i++) {
                 let angle = this.settings.circle.startingAngle + 90 + (this.settings.circle.clockwise ? -1 : 1) * i * 360 / this.settings.nails.quantity;// Get current angle
                 angle *= Math.PI / 180;// Convert to rad
-                this.nails.push({
-                    index: this.nails.length,
-                    id: this.index * 10000 + this.nails.length,
-                    x: centerX + radius * Math.cos(angle),
-                    y: centerY + radius * Math.sin(angle),
-                    cmX: this.settings.circle.radius * Math.cos(angle),
-                    cmY: this.settings.circle.radius * Math.sin(angle),
-                    textX: centerX + 1.05 * radius * Math.cos(angle),
-                    textY: centerY + 1.05 * radius * Math.sin(angle)
-                });
+                this.addNail(centerX + this.settings.circle.radius * Math.cos(angle), centerY + this.settings.circle.radius * Math.sin(angle));
             }
         } else if (this.settings.shape === `rectangle`) {
-            let centerX = this.settings.circle.center.x;
-            let centerY = this.settings.circle.center.y;
-            if (centerX === `auto`) {
-                centerX = this.project.getCenterX();
-            }
-            if (centerY === `auto`) {
-                centerY = this.project.getCenterY();
-            }
-            const radius = this.convertToPx(this.settings.circle.radius);
+            const countX = this.settings.rectangle.width / this.settings.nails.distanceBetweenNails;
+            const countY = this.settings.rectangle.height / this.settings.nails.distanceBetweenNails;
 
+            for (let y = 0; y < countY; y++) {
+                this.addNail(this.settings.rectangle.origin.x,
+                    this.settings.rectangle.origin.y + y * this.settings.nails.distanceBetweenNails);
+                this.addNail(this.settings.rectangle.origin.x + this.settings.rectangle.width,
+                    this.settings.rectangle.origin.y + y * this.settings.nails.distanceBetweenNails);
+            }
+
+            for (let x = 0; x < countX; x++) {
+                this.addNail(this.settings.rectangle.origin.x + x * this.settings.nails.distanceBetweenNails,
+                    this.settings.rectangle.origin.y);
+                this.addNail(this.settings.rectangle.origin.x + x * this.settings.nails.distanceBetweenNails,
+                    this.settings.rectangle.origin.y + this.settings.rectangle.height);
+            }
+        } else if (this.settings.shape === `line`) {
             for (let i = 0; i < this.settings.nails.quantity; i++) {
-                let angle = this.settings.circle.startingAngle + 90 + (this.settings.circle.clockwise ? -1 : 1) * i * 360 / this.settings.nails.quantity;// Get current angle
-                angle *= Math.PI / 180;// Convert to rad
-                this.nails.push({
-                    index: this.nails.length,
-                    id: this.index * 10000 + this.nails.length,
-                    x: centerX + radius * Math.cos(angle),
-                    y: centerY + radius * Math.sin(angle),
-                    cmX: this.settings.circle.radius * Math.cos(angle),
-                    cmY: this.settings.circle.radius * Math.sin(angle),
-                    textX: centerX + 1.05 * radius * Math.cos(angle),
-                    textY: centerY + 1.05 * radius * Math.sin(angle)
-                });
+                const alpha = i / this.settings.nails.quantity;
+                this.addNail(this.settings.line.start.x * (1 - alpha) + this.settings.line.end.x * alpha,
+                    this.settings.line.start.y * (1 - alpha) + this.settings.line.end.y * alpha);
             }
         }
         return this.nails;
     }
 
     drawNails(canvas) {
+        if (!this.visible) {
+            return false;
+        }
         const nailRadius = this.convertToPx(this.settings.nails.radius);
 
         canvas.context.fillStyle = this.settings.nails.color;

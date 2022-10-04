@@ -84,16 +84,23 @@
                 </b-form-group>
             </template>
         </div>
+
+        <color-palette ref="colorPalette" v-if="layerSelected" v-model="layerSelected.settings.color"></color-palette>
     </div>
 </template>
 
 <script>
+import {roundTo1} from "@/utils.js";
+import ColorPalette from "@/components/color-palette.vue";
 import colorConvert from "color-convert";
 
 export default {
     name: "string-layer-properties",
+    components: {ColorPalette},
     data() {
         return {
+            roundTo1,
+            showColorPalette: false,
             tabSelected: 'string'
         }
     },
@@ -151,9 +158,6 @@ export default {
         },
         updateLayerColorHSL() {
             this.layerSelected.settings.color = '#' + colorConvert.hsl.hex(this.layerColorHSL);
-        },
-        roundTo1(value) {
-            return Math.round(value * 10) / 10;
         }
     }
 }

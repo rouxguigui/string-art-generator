@@ -245,7 +245,7 @@ export default {
                     let nail2 = this.getNail(startNail + i * 2 + this.nails.length / 2);
                     this.canvas.context.lineTo(nail2.x, nail2.y);
 
-                    layer.length += Math.sqrt(Math.pow(nail2.cmX - nail.cmX, 2) + Math.pow(nail2.cmY - nail.cmY, 2)) * 2;
+                    layer.length += Math.sqrt(Math.pow(nail2.mmX - nail.mmX, 2) + Math.pow(nail2.mmY - nail.mmY, 2)) * 2;
                 } else {
                     for (let step of layer.settings.patternSteps) {
                         this.canvas.context.moveTo(lastNail.x, lastNail.y);
@@ -261,7 +261,7 @@ export default {
 
                             if (nail) {
                                 this.canvas.context.lineTo(nail.x, nail.y);
-                                layer.length += Math.sqrt(Math.pow(nail.cmX - lastNail.cmX, 2) + Math.pow(nail.cmY - lastNail.cmY, 2)) * 2;
+                                layer.length += Math.sqrt(Math.pow(nail.mmX - lastNail.mmX, 2) + Math.pow(nail.mmY - lastNail.mmY, 2)) * 2;
                                 lastNail = nail;
                             }
                         } catch {

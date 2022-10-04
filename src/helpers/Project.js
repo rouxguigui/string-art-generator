@@ -21,7 +21,7 @@ export default class Project {
             radius: 25,
             resolution: 72,
             unit: `mm`,
-            shape: `square`,
+            shape: `rectangle`,
             marginX: 25,// to display borders around
             marginY: 25,// to display borders around
             nails: {
@@ -43,10 +43,10 @@ export default class Project {
     }
 
     getCenterX() {
-        return this.convertToPx(this.board.width / 2);
+        return this.board.width / 2;
     }
     getCenterY() {
-        return this.convertToPx(this.board.width / 2);
+        return this.board.width / 2;
     }
     convertToPx(size) {
         return size / 10 * this.board.resolution / 2.54;// 2.54 for inch to cm, then cm to mm

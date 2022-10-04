@@ -15,7 +15,7 @@
             <h4>Calques</h4>
             <div class="content">
                 <div class="layer" @click="layerSelected = null" :class="{ 'active': !layerSelected }">
-                    <div class="visibility"><i class="fas fa-game-board-alt"></i></div>
+                    <div class="visibility"><i class="fas fa-chess-board"></i></div>
                     <div class="name">Plateau</div>
                 </div>
                 <div class="layer" v-for="layer in nailsLayers" :key="layer.id" @click="layerSelected = layer"
@@ -48,7 +48,7 @@
                             {{ layer.name }}
                         </div>
                         <div class="color">
-                            <i :style="{color: layer.color}">⬤</i>
+                            <i :style="{color: layer.settings.color}">⬤</i>
                         </div>
                     </div>
                 </draggable>
@@ -61,25 +61,21 @@
                 </b-btn>
             </div>
         </div>
-
-        <color-palette ref="colorPalette" v-if="layerSelected" v-model="layerSelected.color"></color-palette>
     </div>
 </template>
 
 <script>
 import BoardProperties from "@/components/board-properties.vue";
-import ColorPalette from "@/components/color-palette.vue";
 import NailsLayerProperties from "@/components/nails-layer-properties.vue";
 import StringLayerProperties from "@/components/string-layer-properties.vue";
 
 export default {
     name: "properties-panel",
-    components: {StringLayerProperties, BoardProperties, NailsLayerProperties, ColorPalette},
+    components: {StringLayerProperties, BoardProperties, NailsLayerProperties},
     data() {
         return {
             tabSelected: 'board',
             stringTab: 'string',
-            showColorPalette: false,
             menuExtended: false
         }
     },
@@ -227,7 +223,7 @@ export default {
     }
 
     #properties {
-        flex: 2;
+        flex: 3;
         overflow: hidden auto;
     }
 

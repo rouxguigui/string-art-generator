@@ -6,7 +6,7 @@
                     <b-tab title="Gutermann">
                         <div class="palette rectangles">
                             <div class="column" v-for="(column, index) in PaletteHelper.gutermannPalette" :key="'column' + index">
-                                <div class="color" v-for="color in column" :key="color" @click="$emit('input', color.color)"
+                                <div class="color" v-for="color in column" :key="color.color" @click="$emit('input', color.color)"
                                      :title="color.name" :style="{backgroundColor: color.color}"
                                       :class="{'active': color.color === value}">
                                     <span class="name" v-if="isListView">{{color.name}}</span>
