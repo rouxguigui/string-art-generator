@@ -8,6 +8,7 @@ export default new Vuex.Store({
         project: null,
         settings: {
             showMargins: true,
+            showShapes: true,
             showCenter: false,
             middleLines: false,
             diagonalLines: false,

@@ -44,41 +44,67 @@
             <b-form-group class="property">
                 <b-input-group>
                     <b-input-group-text>Forme de base</b-input-group-text>
-                    <b-select v-model="layerSelected.settings.shape">
+                    <b-select @change="update" v-model="layerSelected.settings.shape">
                         <option value="circle">Cercle</option>
                         <option value="rectangle">Rectangle</option>
                         <option value="line">Ligne</option>
+                        <option value="cartesian">F. Carthésienne</option>
+                        <option value="polar">F. Polaire</option>
                         <option value="manual">Manuel</option>
                     </b-select>
                 </b-input-group>
             </b-form-group>
-            <template v-if="layerSelected.settings.shape === `circle`">
+            <template v-if="layerSelected.settings.shape === `polar`">
+                <b-form-group class="property" label="Formule">
+                    <b-input-group>
+                        <b-input-group-text style="width: 33px">r(t)=</b-input-group-text>
+                        <b-input type="text" @change="update" v-model="layerSelected.settings.polar.formula"/>
+                    </b-input-group>
+                </b-form-group>
+            </template>
+            <template v-else-if="layerSelected.settings.shape === `cartesian`">
+                <b-form-group class="property" label="Formule">
+                    <b-input-group>
+                        <b-input-group-text style="width: 33px">f(x)=</b-input-group-text>
+                        <b-input type="text" @change="update" v-model="layerSelected.settings.cartesian.formula"/>
+                    </b-input-group>
+                </b-form-group>
+                <b-form-group class="property">
+                    <b-input-group>
+                        <b-input-group-text title="Point central" style="width: 33px">Min</b-input-group-text>
+                        <b-input type="number" @change="update" v-model.number="layerSelected.settings.cartesian.minX"></b-input>
+                        <b-input-group-text class="mx-2">max</b-input-group-text>
+                        <b-input type="number" @change="update" v-model.number="layerSelected.settings.cartesian.maxX"></b-input>
+                    </b-input-group>
+                </b-form-group>
+            </template>
+            <template v-else-if="layerSelected.settings.shape === `circle`">
                 <b-form-group class="property">
                     <b-input-group>
                         <b-input-group-text title="Point central">Centre ({{ board.unit }})</b-input-group-text>
-                        <b-input type="number" min="0" max="99999" step="10" v-model.number="layerSelected.settings.circle.center.x"></b-input>
+                        <b-input type="number" min="0" max="99999" step="10" @change="update" v-model.number="layerSelected.settings.circle.center.x"></b-input>
                         <b-input-group-text class="mx-2">x</b-input-group-text>
-                        <b-input type="number" min="0" max="99999" step="10" v-model.number="layerSelected.settings.circle.center.y"></b-input>
+                        <b-input type="number" min="0" max="99999" step="10" @change="update" v-model.number="layerSelected.settings.circle.center.y"></b-input>
                     </b-input-group>
                 </b-form-group>
                 <b-form-group class="property">
                     <b-input-group>
                         <b-input-group-text>Rayon</b-input-group-text>
-                        <b-input type="number" min="1" max="150" step="1" v-model.number="layerSelected.settings.circle.radius"></b-input>
+                        <b-input type="number" min="1" max="150" step="1" @change="update" v-model.number="layerSelected.settings.circle.radius"></b-input>
                         <b-input-group-text class="pl-2">{{ board.unit }}</b-input-group-text>
                     </b-input-group>
                 </b-form-group>
                 <b-form-group class="property">
                     <b-input-group>
                         <b-input-group-text>Angle départ</b-input-group-text>
-                        <b-input type="number" min="0" max="360" step="15" v-model.number="layerSelected.settings.circle.startingAngle"></b-input>
+                        <b-input type="number" min="0" max="360" step="15" @change="update" v-model.number="layerSelected.settings.circle.startingAngle"></b-input>
                         <b-input-group-text class="pl-2">°</b-input-group-text>
                     </b-input-group>
                 </b-form-group>
                 <b-form-group class="property">
                     <b-input-group>
                         <b-input-group-text>Sens horaire</b-input-group-text>
-                        <b-checkbox v-model="layerSelected.settings.circle.clockwise"></b-checkbox>
+                        <b-checkbox v-model="layerSelected.settings.circle.clockwise" @change="update"></b-checkbox>
                     </b-input-group>
                 </b-form-group>
             </template>
@@ -86,17 +112,17 @@
                 <b-form-group class="property">
                     <b-input-group>
                         <b-input-group-text title="Coin en haut à gauche">Origine ({{ board.unit }})</b-input-group-text>
-                        <b-input type="number" min="0" max="99999" step="10" v-model.number="layerSelected.settings.rectangle.origin.x"></b-input>
+                        <b-input type="number" min="0" max="99999" step="10" @change="update" v-model.number="layerSelected.settings.rectangle.origin.x"></b-input>
                         <b-input-group-text class="mx-2">x</b-input-group-text>
-                        <b-input type="number" min="0" max="99999" step="10" v-model.number="layerSelected.settings.rectangle.origin.y"></b-input>
+                        <b-input type="number" min="0" max="99999" step="10" @change="update" v-model.number="layerSelected.settings.rectangle.origin.y"></b-input>
                     </b-input-group>
                 </b-form-group>
                 <b-form-group class="property">
                     <b-input-group>
                         <b-input-group-text>Taille ({{ board.unit }})</b-input-group-text>
-                        <b-input type="number" min="1" max="9999" step="10" v-model.number="layerSelected.settings.rectangle.width"></b-input>
+                        <b-input type="number" min="1" max="9999" step="10" @change="update" v-model.number="layerSelected.settings.rectangle.width"></b-input>
                         <b-input-group-text class="mx-2">x</b-input-group-text>
-                        <b-input type="number" min="1" max="9999" step="10" v-model.number="layerSelected.settings.rectangle.height"></b-input>
+                        <b-input type="number" min="1" max="9999" step="10" @change="update" v-model.number="layerSelected.settings.rectangle.height"></b-input>
                     </b-input-group>
                 </b-form-group>
             </template>
@@ -104,17 +130,17 @@
                 <b-form-group class="property">
                     <b-input-group>
                         <b-input-group-text title="Point de départ du segment">Début ({{ board.unit }})</b-input-group-text>
-                        <b-input type="number" min="0" max="99999" step="10" v-model.number="layerSelected.settings.line.start.x"></b-input>
+                        <b-input type="number" min="0" max="99999" step="10" @change="update" v-model.number="layerSelected.settings.line.start.x"></b-input>
                         <b-input-group-text class="mx-2">x</b-input-group-text>
-                        <b-input type="number" min="0" max="99999" step="10" v-model.number="layerSelected.settings.line.start.y"></b-input>
+                        <b-input type="number" min="0" max="99999" step="10" @change="update" v-model.number="layerSelected.settings.line.start.y"></b-input>
                     </b-input-group>
                 </b-form-group>
                 <b-form-group class="property">
                     <b-input-group>
                         <b-input-group-text title="Point d'arrivée du segment">Fin ({{ board.unit }})</b-input-group-text>
-                        <b-input type="number" min="1" max="9999" step="10" v-model.number="layerSelected.settings.line.end.x"></b-input>
+                        <b-input type="number" min="1" max="9999" step="10" @change="update" v-model.number="layerSelected.settings.line.end.x"></b-input>
                         <b-input-group-text class="mx-2">x</b-input-group-text>
-                        <b-input type="number" min="1" max="9999" step="10" v-model.number="layerSelected.settings.line.end.y"></b-input>
+                        <b-input type="number" min="1" max="9999" step="10" @change="update" v-model.number="layerSelected.settings.line.end.y"></b-input>
                     </b-input-group>
                 </b-form-group>
             </template>
@@ -147,6 +173,9 @@ export default {
         }
     },
     methods: {
+        update() {
+            this.layerSelected.generateNails();
+        }
     }
 }
 </script>

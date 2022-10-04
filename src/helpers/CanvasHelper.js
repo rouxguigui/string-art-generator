@@ -29,4 +29,13 @@ export class CanvasHelper {
         this.context.fillRect(0, 0, this.element.width, this.element.height);
         this.context.globalAlpha = 1;
     }
+
+    drawCross(x, y, crossWidth = 8) {
+        this.context.beginPath();
+        this.context.moveTo(x - crossWidth, y);
+        this.context.lineTo(x + crossWidth, y);
+        this.context.moveTo(x, y - crossWidth);
+        this.context.lineTo(x, y + crossWidth);
+        this.context.stroke();
+    }
 }

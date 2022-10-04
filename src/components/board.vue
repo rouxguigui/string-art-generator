@@ -115,6 +115,12 @@ export default {
             this.overlay.context.textBaseline = 'middle';
             this.overlay.context.font = '15pt Arial';
 
+            for (let nailsLayer of this.nailsLayers) {
+                if (this.settings.showShapes) {
+                    nailsLayer.drawOverlay(this.overlay);
+                }
+            }
+
             // Margins
             if (this.$store.state.settings.showMargins) {
                 this.overlay.context.strokeStyle = 'magenta';
@@ -129,6 +135,8 @@ export default {
                     this.overlay.context.strokeRect(this.convertToPx(this.board.marginX), this.convertToPx(this.board.marginY),
                             this.convertToPx(this.board.width - this.board.marginX * 2), this.convertToPx(this.board.height - this.board.marginY * 2));
                 }
+
+                this.overlay.context.setLineDash([]);
             }
 
             // if (this.nailHover) {
