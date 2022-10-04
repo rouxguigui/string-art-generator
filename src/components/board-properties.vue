@@ -8,7 +8,7 @@
                 <b-input-group>
                     <b-input-group-text>Forme de base</b-input-group-text>
                     <b-select v-model="board.shape">
-                        <option value="square">Rectangle</option>
+                        <option value="rectangle">Rectangle</option>
                         <option value="circle">Cercle</option>
                     </b-select>
                 </b-input-group>
@@ -30,7 +30,7 @@
             </b-form-group>
             <b-form-group class="property">
                 <b-input-group>
-                    <b-input-group-text>Margins ({{ board.unit }})</b-input-group-text>
+                    <b-input-group-text>Marges ({{ board.unit }})</b-input-group-text>
                     <b-input type="number" min="1" max="150" step="1" v-model.number="board.marginX"></b-input>
                     <b-input-group-text class="mx-2">x</b-input-group-text>
                     <b-input type="number" min="1" max="150" step="1" v-model.number="board.marginY"></b-input>

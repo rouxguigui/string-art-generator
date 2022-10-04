@@ -31,16 +31,16 @@ Vue.mixin({
                 this.$store.state.project.board = value;
             }
         },
-        layers: {
+        stringLayers: {
             get() {
                 if (this.$store.state.project) {
-                    return this.$store.state.project.layers;
+                    return this.$store.state.project.stringLayers;
                 } else {
                     return null;
                 }
             },
             set(value) {
-                this.$store.state.project.layers = value;
+                this.$store.state.project.stringLayers = value;
             }
         },
         nailsLayers: {

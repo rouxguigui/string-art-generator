@@ -1,5 +1,5 @@
 import NailsLayer from "@/helpers/NailsLayer.js";
-import PaletteHelper from "@/helpers/PaletteHelper.js";
+import StringLayer from "@/helpers/StringLayer.js";
 import {generateGuid} from "@/utils.js";
 
 export default class Project {
@@ -22,14 +22,11 @@ export default class Project {
             resolution: 72,
             unit: `mm`,
             shape: `square`,
-            startingAngle: 0,
             marginX: 25,// to display borders around
             marginY: 25,// to display borders around
-            clockwise: true,
             nails: {
                 radius: 3,
-                color: '#aaaaaa',
-                quantity: 320
+                color: '#aaaaaa'
             },
             nailsBetweenLayers: -1,// -1 for auto
             strings: {
@@ -42,37 +39,36 @@ export default class Project {
         }
 
         this.nailsLayers = [];
-        this.layers = [];
+        this.stringLayers = [];
+    }
+
+    getCenterX() {
+        return this.convertToPx(this.board.width / 2);
+    }
+    getCenterY() {
+        return this.convertToPx(this.board.width / 2);
+    }
+    convertToPx(size) {
+        return size / 10 * this.board.resolution / 2.54;// 2.54 for inch to cm, then cm to mm
     }
 
     addLayer() {
-        let layer = {
-            index: this.layers.length,
-            type: `string`,
-            id: generateGuid(),
-            length: 0,
-            name: `Fil ${this.layers.length + 1}`,
-            color: PaletteHelper.getDefaultColor(this.layers.length),
-            visible: true,
-            startingNail: 'auto',
-            pattern: 'default',
-            patternSteps: []
-        };
-        this.layers.push(layer);
+        let layer = new StringLayer(this, this.stringLayers.length);
+        this.stringLayers.push(layer);
         return layer;
     }
 
     addNailsLayer() {
-        let nailsLayer = new NailsLayer(this.board, this.nailsLayers.length);
+        let nailsLayer = new NailsLayer(this, this.nailsLayers.length);
         this.nailsLayers.push(nailsLayer);
         return nailsLayer;
     }
 
     getAutoNailsBetweenLayers() {
-        if (this.layers.length === 1) {
+        if (this.stringLayers.length === 1) {
             return 0;
         } else if (this.board.nails) {
-            return this.board.nails.quantity / (this.layers.length - 1) / 2;
+            return this.board.nails.quantity / (this.stringLayers.length - 1) / 2;
         } else {
             return 10;
         }
@@ -82,7 +78,7 @@ export default class Project {
         if (layer.type === `nails`) {
             this.nailsLayers.splice(this.nailsLayers.indexOf(layer), 1);
         } else if (layer.type === `string`) {
-            this.layers.splice(this.layers.indexOf(layer), 1);
+            this.stringLayers.splice(this.stringLayers.indexOf(layer), 1);
         }
     }
 
@@ -131,7 +127,7 @@ export default class Project {
             board: this.board,
             info: this.info,
             nailsLayers: this.nailsLayers,
-            layers: this.layers
+            stringLayers: this.stringLayers
         };
         json = JSON.stringify(json);
 
@@ -147,17 +143,18 @@ export default class Project {
             this.name = project.name;
             this.id = project.id;
             this.board = project.board;
-            this.layers = project.layers;
             if (project.info) {
                 this.info = project.info;
                 this.nailsLayers = project.nailsLayers;
+                this.stringLayers = project.stringLayers;
             } else {
                 this.nailsLayers = [];
                 this.addNailsLayer();
                 // Switch from cm to mm
-                this.board.width * 10;
-                this.board.height * 10;
-                for (let layer of project.layers) {
+                this.board.width = this.board.width * 10;
+                this.board.height = this.board.height * 10;
+                this.stringLayers = project.layers;
+                for (let layer of project.stringLayers) {
                     layer.type = `string`;
                 }
             }

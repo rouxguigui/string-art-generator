@@ -5,94 +5,10 @@
                 class="fas fa-arrow-right"></i></b-btn>
         <div v-if="!isMobile || $store.state.mobilePropertiesExtended" id="properties" class="properties-group">
             <board-properties v-if="!layerSelected"/>
-            <nails-layer-properties v-model="layerSelected" v-if="layerSelected && layerSelected.type === `nails`"/>
-
-            <div class="content" v-if="layerSelected && layerSelected.type !== `nails`">
-                <div class="tabs">
-                    <b-btn variant="tab" :class="{'active': stringTab === 'string'}" @click="stringTab = 'string'">Fil</b-btn>
-                    <b-btn variant="tab" :class="{'active': stringTab === 'pattern'}" @click="stringTab = 'pattern'">Motif</b-btn>
-                </div>
-                <template v-if="stringTab === 'string'">
-                    <b-form-group class="property">
-                        <b-input-group>
-                            <b-input-group-text>Nom</b-input-group-text>
-                            <b-input type="text" v-model="layerSelected.name"></b-input>
-                        </b-input-group>
-                    </b-form-group>
-                    <b-form-group class="property">
-                        <b-input-group>
-                            <b-input-group-text>Couleur</b-input-group-text>
-                            <b-input type="text" maxlength="7" v-model="layerSelected.color"></b-input>
-                            <b-input type="color" class="ml-1" v-model="layerSelected.color"></b-input>
-                        </b-input-group>
-                        <b-input-group class="mt-1">
-                            <b-btn variant="default" class="mr-1" @click="$refs.colorPalette.show()"><i class="fas fa-palette"></i></b-btn>
-                            <b-input type="number" min="0" max="360" @change="updateLayerColorHSL" v-model.number="layerColorHSL[0]"></b-input>
-                            <b-input-group-text class="px-1">°</b-input-group-text>
-                            <b-input type="number" min="0" max="100" @change="updateLayerColorHSL" v-model.number="layerColorHSL[1]"></b-input>
-                            <b-input-group-text class="px-1">%</b-input-group-text>
-                            <b-input type="number" min="0" max="100" @change="updateLayerColorHSL" v-model.number="layerColorHSL[2]"></b-input>
-                            <b-input-group-text class="pl-1">%</b-input-group-text>
-                        </b-input-group>
-                    </b-form-group>
-                    <b-form-group class="property">
-                        <b-input-group>
-                            <b-input-group-text>Longueur</b-input-group-text>
-                            <b-input readonly :value="layerSelected.length|number"></b-input>
-                            <b-input-group-text class="pl-2">m</b-input-group-text>
-                        </b-input-group>
-                    </b-form-group>
-                </template>
-
-                <template v-if="stringTab === 'pattern'">
-                    <b-form-group class="property">
-                        <b-input-group>
-                            <b-input-group-text>Type</b-input-group-text>
-                            <b-select v-model="layerSelected.pattern">
-                                <option value="default">Défaut</option>
-                                <option value="custom">Personnalisé</option>
-                            </b-select>
-                        </b-input-group>
-                    </b-form-group>
-                    <b-form-group class="property">
-                        <b-input-group>
-                            <b-input-group-text>1er clou</b-input-group-text>
-                            <b-select v-model.number="layerSelected.startingNail">
-                                <option value="auto">Automatique</option>
-                                <option value="0">Clou 1</option>
-                                <option v-for="i in 150" :value="i" :key="'start-' + i">Clou {{ i + 1 }}</option>
-                            </b-select>
-                        </b-input-group>
-                    </b-form-group>
-                    <template v-if="layerSelected.pattern === 'custom'">
-                        <b-form-group class="property">
-                            <b-input-group>
-                                <b-input-group-text>Actions</b-input-group-text>
-                                <b-btn size="sm" :variant="recordLayerPattern ? 'danger' : 'default'" @click="startPatternRecord"
-                                       :class="recordLayerPattern ? '' : 'text-danger'" title="Enregistrer un motif">⬤ <span v-if="recordLayerPattern">Appliquer</span></b-btn>
-                                <template v-if="!recordLayerPattern">
-                                    <b-btn size="sm" class="ml-2" @click="addPatternStep()" variant="default" title="Ajouter une étape"><i class="fas fa-plus-square"></i></b-btn>
-                                    <b-btn size="sm" class="ml-auto" variant="default" title="Appliquer ce motif à tous les calques"><i class="fas fa-share-square"></i></b-btn>
-                                </template>
-                            </b-input-group>
-                        </b-form-group>
-                        <hr>
-                        <h4>Étapes</h4>
-                        <b-form-group class="property" v-for="(step, index) in layerSelected.patternSteps" :key="'step-' + index">
-                            <b-input-group v-if="recordLayerPattern">
-                                <b-input-group-text>Clou {{index+1}}</b-input-group-text>
-                                <b-input v-model="step.nail"></b-input>
-                                <b-btn size="sm" class="ml-2" @click="removePatternStep(index)" variant="default" title="Enlever cette étape"><i class="fas fa-trash"></i></b-btn>
-                            </b-input-group>
-                            <b-input-group v-else>
-                                <b-input-group-text>Étape {{index+1}}</b-input-group-text>
-                                <b-input v-model="step.delta"></b-input>
-                                <b-btn size="sm" class="ml-2" @click="removePatternStep(index)" variant="default" title="Enlever cette étape"><i class="fas fa-trash"></i></b-btn>
-                            </b-input-group>
-                        </b-form-group>
-                    </template>
-                </template>
-            </div>
+            <template v-else>
+                <nails-layer-properties v-model="layerSelected" v-if="layerSelected.type === `nails`"/>
+                <string-layer-properties v-model="layerSelected" v-else-if="layerSelected.type === `string`"/>
+            </template>
         </div>
 
         <div id="layers" class="properties-group">
@@ -118,8 +34,8 @@
                         <i class="fas fa-map-pin"/>
                     </div>
                 </div>
-                <draggable v-model="layers" :handle="isMobile || isMobileLandscape ? '.handle': null" ghost-class="list-item-ghost" drag-class="list-item-drag" animation="150">
-                    <div class="layer" v-for="layer in layers" :key="layer.id" @click="layerSelected = layer"
+                <draggable v-model="stringLayers" :handle="isMobile || isMobileLandscape ? '.handle': null" ghost-class="list-item-ghost" drag-class="list-item-drag" animation="150">
+                    <div class="layer" v-for="layer in stringLayers" :key="layer.id" @click="layerSelected = layer"
                          :class="{ 'active': layerSelected === layer }">
                         <div v-if="isMobile || isMobileLandscape" class="handle">
                             <i class="fas fa-bars mr-2"></i>
@@ -154,11 +70,11 @@
 import BoardProperties from "@/components/board-properties.vue";
 import ColorPalette from "@/components/color-palette.vue";
 import NailsLayerProperties from "@/components/nails-layer-properties.vue";
-import colorConvert from "color-convert";
+import StringLayerProperties from "@/components/string-layer-properties.vue";
 
 export default {
     name: "properties-panel",
-    components: {BoardProperties, NailsLayerProperties, ColorPalette},
+    components: {StringLayerProperties, BoardProperties, NailsLayerProperties, ColorPalette},
     data() {
         return {
             tabSelected: 'board',
@@ -179,20 +95,6 @@ export default {
                 this.$emit(`input`, value);
                 if (!value && this.recordLayerPattern) {
                     this.$store.commit('setRecordLayerPattern', false);
-                }
-            }
-        },
-        layerColorHSL: {
-            get() {
-                if (this.layerSelected) {
-                    return colorConvert.hex.hsl(this.layerSelected.color);
-                } else {
-                    return null;
-                }
-            },
-            set(value) {
-                if (this.layerSelected) {
-                    this.layerSelected.color = '#' + colorConvert.hsl.hex(value);
                 }
             }
         }
@@ -236,9 +138,6 @@ export default {
             }
             this.project.removeLayer(this.layerSelected);
             this.layerSelected = null;
-        },
-        updateLayerColorHSL() {
-            this.layerSelected.color = '#' + colorConvert.hsl.hex(this.layerColorHSL);
         },
         roundTo1(value) {
             return Math.round(value * 10) / 10;

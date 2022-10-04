@@ -102,7 +102,7 @@ export default {
     components: {PropertiesPanel, Board, MainPage},
     data() {
         return {
-            zoom: 1,
+            zoom: 0.5,
             showPreviousSessionModal: false,
             previousProjectName: '',
             layerSelected: false,
