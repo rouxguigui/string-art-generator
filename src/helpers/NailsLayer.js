@@ -15,9 +15,11 @@ export default class NailsLayer extends Layer {
                 color: '#aaaaaa',
                 positionBy: `quantity`,
                 quantity: 100,
-                distanceBetweenNails: `auto`,
+                autoDistance: true,
+                distanceBetweenNails: 3,
             },
             circle: {
+                centered: true,
                 center: {
                     x: `auto`,
                     y: `auto`
@@ -31,6 +33,7 @@ export default class NailsLayer extends Layer {
                     x: this.project.board.marginX,
                     y: this.project.board.marginY
                 },
+                rotation: 0, // in degree
                 width: this.project.board.width - this.project.board.marginX * 2,
                 height: this.project.board.height - this.project.board.marginY * 2
             },
@@ -81,9 +84,13 @@ export default class NailsLayer extends Layer {
         if (this.shape === `manual`) {
             return false;
         }
-        this.settings.positionBy = `quantity`;
-        this.settings.nails.distanceBetweenNails = roundTo1(this.getShapePerimeter() / this.settings.nails.quantity);
-
+        if (this.settings.nails.autoDistance) {
+            this.settings.positionBy = `quantity`;
+            this.settings.nails.distanceBetweenNails = roundTo1(this.getShapePerimeter() / this.settings.nails.quantity);
+            if (isNaN(this.settings.nails.distanceBetweenNails)) {
+                this.settings.nails.distanceBetweenNails = 3;
+            }
+        }
         this.generateNails();
     }
 
@@ -113,8 +120,8 @@ export default class NailsLayer extends Layer {
         }
         this.nails = [];
 
-        let centerX = this.project.getCenterX();
-        let centerY = this.project.getCenterY();
+        let centerX = this.getCenterX();
+        let centerY = this.getCenterY();
         let angle = 0;
         let i = 0;
         let x = 0;
@@ -222,14 +229,39 @@ export default class NailsLayer extends Layer {
         }
     }
 
+    getCenterX() {
+        return this.project.getCenterX();
+    }
+
+    getCenterY() {
+        return this.project.getCenterY();
+    }
+
     drawOverlay(overlay) {
         if (!this.visible) {
             return false;
         }
+        overlay.globalAlpha = 1;
+        overlay.lineWidth = 2;
+        let centerX = this.getCenterX();
+        let centerY = this.getCenterY();
+
         switch (this.settings.shape) {
             case `line`:
                 overlay.drawCross(this.convertToPx(this.settings.line.start.x), this.convertToPx(this.settings.line.start.y));
                 overlay.drawCross(this.convertToPx(this.settings.line.end.x), this.convertToPx(this.settings.line.end.y));
+                break;
+            case `circle`:
+
+                if (this.settings.circle.center.x !== `auto`) {
+                    centerX = this.settings.circle.center.x;
+                }
+                if (this.settings.circle.center.y !== `auto`) {
+                    centerY = this.settings.circle.center.y;
+                }
+                overlay.drawCross(this.convertToPx(centerX), this.convertToPx(centerY));
+                overlay.drawCross(this.convertToPx(centerX + this.settings.circle.radius * Math.cos(this.settings.circle.startingAngle)),
+                    this.convertToPx(centerY + this.settings.circle.radius * Math.sin(this.settings.circle.startingAngle)), 20);
                 break;
         }
     }

@@ -17,12 +17,17 @@
                     <b-input type="number" min="1" max="999" step="10" v-model.number="layerSelected.settings.nails.quantity" @change="layerSelected.updateDistanceBetweenNails()"></b-input>
                 </b-input-group>
             </b-form-group>
-            <b-form-group class="property">
+            <b-form-group class="property" v-if="!layerSelected.settings.nails.autoDistance">
                 <b-input-group>
                     <b-input-group-text title="Distance entre les clous">Dist. entre</b-input-group-text>
                     <b-input type="number" min="1" max="999" step="1" v-model.number="layerSelected.settings.nails.distanceBetweenNails" @change="layerSelected.updateNailsQuantity()"></b-input>
                     <b-input-group-text class="pl-2">{{ board.unit }}</b-input-group-text>
                 </b-input-group>
+            </b-form-group>
+            <b-form-group class="property">
+                <b-checkbox v-model="layerSelected.settings.nails.autoDistance" @change="toggleAutoDistanceBetweenNails">
+                    Distance automatique
+                </b-checkbox>
             </b-form-group>
             <b-form-group class="property">
                 <b-input-group>
@@ -87,13 +92,18 @@
                 </b-form-group>
             </template>
             <template v-else-if="layerSelected.settings.shape === `circle`">
-                <b-form-group class="property">
+                <b-form-group class="property" v-if="!layerSelected.settings.circle.centered">
                     <b-input-group>
                         <b-input-group-text title="Point central">Centre ({{ board.unit }})</b-input-group-text>
                         <b-input type="number" min="0" max="99999" step="10" @change="update" v-model.number="layerSelected.settings.circle.center.x"></b-input>
                         <b-input-group-text class="mx-2">x</b-input-group-text>
                         <b-input type="number" min="0" max="99999" step="10" @change="update" v-model.number="layerSelected.settings.circle.center.y"></b-input>
                     </b-input-group>
+                </b-form-group>
+                <b-form-group class="property">
+                    <b-checkbox v-model="layerSelected.settings.circle.centered" @change="toggleCircleCentered">
+                        Centrer le cercle
+                    </b-checkbox>
                 </b-form-group>
                 <b-form-group class="property">
                     <b-input-group>
@@ -181,6 +191,22 @@ export default {
         }
     },
     methods: {
+        toggleAutoDistanceBetweenNails(value) {
+            if (value) {
+                this.layerSelected.updateDistanceBetweenNails();
+            }
+            this.update();
+        },
+        toggleCircleCentered(value) {
+            if (value) {
+                this.layerSelected.settings.circle.center.x = `auto`;
+                this.layerSelected.settings.circle.center.y = `auto`;
+            } else {
+                this.layerSelected.settings.circle.center.x = this.layerSelected.getCenterX();
+                this.layerSelected.settings.circle.center.y = this.layerSelected.getCenterY();
+            }
+            this.update();
+        },
         update() {
             this.layerSelected.generateNails();
         }
