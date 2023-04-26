@@ -16,6 +16,9 @@ export default {
     width: calc(100vw - 270px);
     max-height: 100vh;
     height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     overflow: scroll;
 
     &.record-mode {

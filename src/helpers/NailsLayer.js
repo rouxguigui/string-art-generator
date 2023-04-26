@@ -8,7 +8,7 @@ export default class NailsLayer extends Layer {
         super(`nails`, project, index);
         this.name = `Clous ${this.index + 1}`;
         this.settings = {
-            shape: `polar`,
+            shape: `circle`,
             autoResize: true,
             nails: {
                 radius: 1.5, // in mm
@@ -43,8 +43,8 @@ export default class NailsLayer extends Layer {
                     y: this.project.board.marginY
                 },
                 end: {
-                    x: this.project.board.width - this.project.board.marginX * 2,
-                    y: this.project.board.height - this.project.board.marginY * 2
+                    x: this.project.board.width - this.project.board.marginX,
+                    y: this.project.board.height - this.project.board.marginY
                 }
             },
             cartesian: {
@@ -196,7 +196,7 @@ export default class NailsLayer extends Layer {
         return this.nails;
     }
 
-    drawNails(canvas) {
+    drawNails(canvas, projectSettings) {
         if (!this.visible) {
             return false;
         }
@@ -206,7 +206,7 @@ export default class NailsLayer extends Layer {
         canvas.context.strokeStyle = this.settings.nails.color;
         canvas.context.lineWidth = 1;
 
-        // if (this.settings.printMode) {
+        // if (projectSettings.printMode) {
         //     canvas.context.beginPath();
         //     canvas.context.arc(this.centerX, this.centerY, nailRadius, 0, Math.PI * 2);
         //     canvas.context.stroke();
@@ -214,7 +214,7 @@ export default class NailsLayer extends Layer {
         let index = 0;
         for (let nail of this.nails) {
             canvas.context.beginPath();
-            if (this.settings.printMode) {
+            if (projectSettings.printMode) {
                 canvas.context.moveTo(this.centerX + (nail.x - this.centerX) * 0.98, this.centerY + (nail.y - this.centerY) * 0.98);
                 canvas.context.lineTo(nail.x, nail.y);
                 canvas.context.stroke();
@@ -222,7 +222,7 @@ export default class NailsLayer extends Layer {
                 canvas.context.arc(nail.x, nail.y, nailRadius, 0, Math.PI * 2);
                 canvas.context.fill();
             }
-            if (this.settings.nailNumbers) {
+            if (projectSettings.nailNumbers) {
                 canvas.context.fillText(index + 1, nail.textX + 5, nail.textY + 5);
             }
             index += 1;

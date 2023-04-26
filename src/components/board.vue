@@ -36,13 +36,6 @@ export default {
               return ``;
           }
         },
-        nailsBetweenLayers() {
-            if (this.board.nailsBetweenLayers === -1) {
-                return this.project.getAutoNailsBetweenLayers();
-            } else {
-                return this.board.nailsBetweenLayers;
-            }
-        },
         resolution() {
             return this.board.resolution / 2.54;
         },
@@ -76,8 +69,8 @@ export default {
             this.$emit('nail-selected', this.nailSelected, lastNailSelected);
         },
         findNailByMouseEvt(evt) {
-            let radius = this.convertToPx(this.board.nails.radius + 2) / 20;
             return this.nails.find(n => {
+                let radius = this.convertToPx(n.radius + 2) / 20;
                 return n.x - radius < evt.offsetX / this.zoom && evt.offsetX / this.zoom < n.x + radius &&
                         n.y - radius < evt.offsetY / this.zoom && evt.offsetY / this.zoom < n.y + radius;
             });
@@ -101,7 +94,7 @@ export default {
             this.canvas.clear(this.board.backgroundColor);
             this.generateNails();
             this.drawGrid();
-            if (!this.settings.printMode) {
+            if (!this.projectSettings.printMode) {
                 this.drawLayers();
             }
             this.drawNails();
@@ -116,13 +109,13 @@ export default {
             this.overlay.context.font = '15pt Arial';
 
             for (let nailsLayer of this.nailsLayers) {
-                if (this.settings.showShapes) {
+                if (this.projectSettings.showShapes) {
                     nailsLayer.drawOverlay(this.overlay);
                 }
             }
 
             // Margins
-            if (this.$store.state.settings.showMargins) {
+            if (this.projectSettings.showMargins) {
                 this.overlay.context.strokeStyle = 'magenta';
                 this.overlay.context.setLineDash([5, 5]);
                 this.overlay.context.lineHeight = 1;
@@ -143,7 +136,7 @@ export default {
             //     this.overlay.context.fillStyle = '#c97413';
             //     this.overlay.context.strokeStyle = '#c97413';
             //     this.overlay.context.beginPath();
-            //     this.overlay.context.arc(this.nailHover.x, this.nailHover.y, (this.board.nails.radius + 2) * this.resolution / 20, 0, Math.PI * 2);
+            //     this.overlay.context.arc(this.nailHover.x, this.nailHover.y, (this.board.nailSettings.radius + 2) * this.resolution / 20, 0, Math.PI * 2);
             //     this.overlay.context.fill();
             //     this.overlay.context.fillText(this.nailHover.index + 1, this.nailHover.textX + 5, this.nailHover.textY + 5);
             // }
@@ -154,7 +147,7 @@ export default {
             //     for (let step of this.layerSelected.patternSteps) {
             //         let nail = this.getNail(step.nail);
             //         this.overlay.context.beginPath();
-            //         this.overlay.context.arc(nail.x, nail.y, (this.board.nails.radius + 2) * this.resolution / 20, 0, Math.PI * 2);
+            //         this.overlay.context.arc(nail.x, nail.y, (this.board.nailSettings.radius + 2) * this.resolution / 20, 0, Math.PI * 2);
             //         this.overlay.context.fill();
             //         this.overlay.context.fillText(index + 1, nail.textX + 5, nail.textY + 5);
             //         index++;
@@ -163,7 +156,7 @@ export default {
             //     this.overlay.context.fillStyle = 'magenta';
             //     this.overlay.context.strokeStyle = 'magenta';
             //     this.overlay.context.beginPath();
-            //     this.overlay.context.arc(this.nailSelected.x, this.nailSelected.y, (this.board.nails.radius + 2) * this.resolution / 20, 0, Math.PI * 2);
+            //     this.overlay.context.arc(this.nailSelected.x, this.nailSelected.y, (this.board.nailSettings.radius + 2) * this.resolution / 20, 0, Math.PI * 2);
             //     this.overlay.context.fill();
             //     this.overlay.context.fillText(this.nailSelected.index + 1, this.nailSelected.textX + 5, this.nailSelected.textY + 5);
             //
@@ -203,7 +196,7 @@ export default {
             //     this.canvas.context.stroke();
             // }
             //
-            // if (this.settings.printMode) {
+            // if (this.projectSettings.printMode) {
             //     this.canvas.context.strokeStyle = `#000`;
             //     this.canvas.context.beginPath();
             //     this.canvas.context.moveTo(this.centerX - 10, this.centerY);
@@ -217,7 +210,7 @@ export default {
             this.canvas.context.textAlign = 'center';
             this.canvas.context.textBaseline = 'middle';
             for (let nailsLayer of this.nailsLayers) {
-                nailsLayer.drawNails(this.canvas);
+                nailsLayer.drawNails(this.canvas, this.projectSettings);
             }
         },
         drawLayers() {
@@ -238,11 +231,22 @@ export default {
             this.canvas.context.textBaseline = 'middle';
 
             layer.length = 0;
-            // let startNail = Math.round(-index * this.nailsBetweenLayers);
-            // if (layer.startingNail !== 'auto' && !isNaN(parseInt(layer.startingNail))) {
-            //     startNail = parseInt(layer.startingNail);
-            // }
-            const startNail = 0;
+            let nailsBetweenLayers = this.board.nailsBetweenLayers;
+            if (this.board.nailsBetweenLayers === -1) {
+                if (this.stringLayers.length === 1) {
+                    nailsBetweenLayers = 0;
+                } else if (this.nails) {
+                    nailsBetweenLayers = this.nails.length / (this.stringLayers.length - 1) / 2;
+                } else {
+                    nailsBetweenLayers = 10;
+                }
+            }
+
+            let startNail = Math.round(-index * nailsBetweenLayers);
+            if (layer.startingNail !== 'auto' && !isNaN(parseInt(layer.startingNail))) {
+                startNail = parseInt(layer.startingNail);
+            }
+            // const startNail = 0;
             let lastNail = this.getNail(startNail);
             this.canvas.context.beginPath();
             for (let i = 0; i < this.nails.length / 2; i++) {

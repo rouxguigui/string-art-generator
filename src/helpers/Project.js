@@ -24,10 +24,6 @@ export default class Project {
             shape: `rectangle`,
             marginX: 25,// to display borders around
             marginY: 25,// to display borders around
-            nails: {
-                radius: 3,
-                color: '#aaaaaa'
-            },
             nailsBetweenLayers: -1,// -1 for auto
             strings: {
                 width: 1
@@ -62,16 +58,6 @@ export default class Project {
         let nailsLayer = new NailsLayer(this, this.nailsLayers.length);
         this.nailsLayers.push(nailsLayer);
         return nailsLayer;
-    }
-
-    getAutoNailsBetweenLayers() {
-        if (this.stringLayers.length === 1) {
-            return 0;
-        } else if (this.board.nails) {
-            return this.board.nails.quantity / (this.stringLayers.length - 1) / 2;
-        } else {
-            return 10;
-        }
     }
 
     removeLayer(layer) {

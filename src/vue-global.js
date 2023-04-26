@@ -11,7 +11,7 @@ Vue.mixin({
                 this.$store.commit("setProject", value);
             }
         },
-        settings: {
+        projectSettings: {
             get() {
                 return this.$store.state.settings;
             },

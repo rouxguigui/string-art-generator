@@ -31,7 +31,7 @@
                         {{ layer.name }}
                     </div>
                     <div class="color icon">
-                        <i class="fas fa-map-pin faw" :style="{color: layer.settings.nails.color}"/>
+                        <i class="fas fa-map-pin fa-fw" :style="{color: layer.settings.nails.color}"/>
                     </div>
                 </div>
                 <draggable v-model="stringLayers" :handle="isMobile || isMobileLandscape ? '.handle': null" ghost-class="list-item-ghost" drag-class="list-item-drag" animation="150">
@@ -48,15 +48,15 @@
                             {{ layer.name }}
                         </div>
                         <div class="color">
-                            <i class="fas fa-reel faw" :style="{color: layer.settings.color}"/>
+                            <i class="fas fa-reel fa-fw" :style="{color: layer.settings.color}"/>
 <!--                            <i :style="{color: layer.settings.color}">⬤</i>-->
                         </div>
                     </div>
                 </draggable>
             </div>
             <div class="actions">
-                <b-btn @click="addLayer" title="Ajouter un fil"><i class="fas fa-layer-plus"/></b-btn>
                 <b-btn @click="addNailsLayer" title="Ajouter des clous"><i class="fas fa-map-pin"/></b-btn>
+                <b-btn @click="addLayer" title="Ajouter un fil"><i class="fas fa-layer-plus"/></b-btn>
                 <b-btn class="ml-auto" :disabled="layerSelected === null" @click="removeLayer">
                     <i class="fas fa-trash"></i>
                 </b-btn>
@@ -289,5 +289,9 @@ export default {
             }
         }
     }
+}
+
+.fa-reel {
+    text-shadow: 0 0 1px white;
 }
 </style>

@@ -102,7 +102,7 @@ export default {
     components: {PropertiesPanel, Board, MainPage},
     data() {
         return {
-            zoom: 0.5,
+            zoom: 0.4,
             showPreviousSessionModal: false,
             previousProjectName: '',
             layerSelected: false,
@@ -124,6 +124,9 @@ export default {
             }
         },
         onWheelChanged(evt) {
+            if (!evt.ctrlKey) {
+                return true;
+            }
             if (evt.deltaY > 0) {
                 this.setZoom(-0.1);
             } else {
@@ -212,7 +215,7 @@ export default {
             this.loadRecentProjects();
         },
         print() {
-            if (this.settings.printMode) {
+            if (this.projectSettings.printMode) {
                 this.$store.state.settings.showCenter = false;
                 this.$store.state.settings.middleLines = false;
                 this.$store.state.settings.diagonalLines = false;
