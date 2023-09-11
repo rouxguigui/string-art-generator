@@ -8,7 +8,7 @@ export default class NailsLayer extends Layer {
         super(`nails`, project, index);
         this.name = `Clous ${this.index + 1}`;
         this.settings = {
-            shape: `circle`,
+            shape: `line`,
             autoResize: true,
             nails: {
                 radius: 1.5, // in mm
@@ -211,7 +211,7 @@ export default class NailsLayer extends Layer {
         //     canvas.context.arc(this.centerX, this.centerY, nailRadius, 0, Math.PI * 2);
         //     canvas.context.stroke();
         // }
-        let index = 0;
+        // let index = 0;
         for (let nail of this.nails) {
             canvas.context.beginPath();
             if (projectSettings.printMode) {
@@ -223,9 +223,9 @@ export default class NailsLayer extends Layer {
                 canvas.context.fill();
             }
             if (projectSettings.nailNumbers) {
-                canvas.context.fillText(index + 1, nail.textX + 5, nail.textY + 5);
+                canvas.context.fillText(nail.index, nail.textX + 5, nail.textY + 5);
             }
-            index += 1;
+            // index += 1;
         }
     }
 

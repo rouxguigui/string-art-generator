@@ -16,14 +16,14 @@ export default class Project {
 
         this.board = {
             backgroundColor: '#ffffff',
-            width: 560,
-            height: 560,
+            width: 610,
+            height: 310,
             radius: 25,
             resolution: 72,
             unit: `mm`,
             shape: `rectangle`,
-            marginX: 25,// to display borders around
-            marginY: 25,// to display borders around
+            marginX: 10,// to display borders around
+            marginY: 10,// to display borders around
             nailsBetweenLayers: -1,// -1 for auto
             strings: {
                 width: 1

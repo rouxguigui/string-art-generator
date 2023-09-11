@@ -27,13 +27,24 @@
                     <b-input-group-text class="pl-1">%</b-input-group-text>
                 </b-input-group>
             </b-form-group>
+          <hr>
+          <h4>Stats</h4>
+          <template v-if="layerSelected.stats">
             <b-form-group class="property">
                 <b-input-group>
                     <b-input-group-text>Longueur</b-input-group-text>
-                    <b-input readonly :value="layerSelected.length|number"></b-input>
+                    <b-input readonly :value="layerSelected.stats.length|number"></b-input>
                     <b-input-group-text class="pl-2">m</b-input-group-text>
                 </b-input-group>
             </b-form-group>
+            <b-form-group class="property">
+                <b-input-group>
+                    <b-input-group-text>Etapes</b-input-group-text>
+                    <b-input readonly :value="layerSelected.stats.stepCount|number"></b-input>
+                    <b-input-group-text class="pl-2">m</b-input-group-text>
+                </b-input-group>
+            </b-form-group>
+          </template>
         </div>
 
         <div class="content" v-if="tabSelected === 'pattern'">
@@ -41,7 +52,8 @@
                 <b-input-group>
                     <b-input-group-text>Type</b-input-group-text>
                     <b-select v-model="layerSelected.settings.pattern">
-                        <option value="default">Aqua</option>
+                        <option value="aqua">Aqua</option>
+                        <option value="rectangle">Rectangle</option>
                         <option value="custom">Personnalisé</option>
                     </b-select>
                 </b-input-group>
@@ -53,6 +65,16 @@
                         <option value="auto">Automatique</option>
                         <option value="0">Clou 1</option>
                         <option v-for="i in 150" :value="i" :key="'start-' + i">Clou {{ i + 1 }}</option>
+                    </b-select>
+                </b-input-group>
+            </b-form-group>
+            <b-form-group class="property">
+                <b-input-group>
+                    <b-input-group-text>Repetition</b-input-group-text>
+                    <b-select v-model.number="layerSelected.settings.loopCount">
+                        <option value="auto">Automatique</option>
+                        <option value="0">1x</option>
+                        <option v-for="i in 150" :value="i" :key="'loop-' + i">{{ i + 1 }}x</option>
                     </b-select>
                 </b-input-group>
             </b-form-group>

@@ -220,17 +220,24 @@ export default {
                 index++;
             }
         },
-        drawLayer(index, layer) {
-            if (!layer.visible || this.recordLayerPattern) {
+        drawLayer(index, stringLayer) {
+            if (!stringLayer.visible || this.recordLayerPattern) {
                 return false;
             }
 
-            this.canvas.context.strokeStyle = layer.settings.color;
+            this.canvas.context.strokeStyle = stringLayer.settings.color;
             this.canvas.context.lineWidth = this.board.strings.width;
             this.canvas.context.textAlign = 'center';
             this.canvas.context.textBaseline = 'middle';
 
-            layer.length = 0;
+            if (!stringLayer.stats) {
+              stringLayer.stats = {
+                length: 0,
+                stepCount: 0
+              }
+            }
+          stringLayer.stats.length = 0;
+          stringLayer.stats.stepCount = 0;
             let nailsBetweenLayers = this.board.nailsBetweenLayers;
             if (this.board.nailsBetweenLayers === -1) {
                 if (this.stringLayers.length === 1) {
@@ -243,23 +250,41 @@ export default {
             }
 
             let startNail = Math.round(-index * nailsBetweenLayers);
-            if (layer.startingNail !== 'auto' && !isNaN(parseInt(layer.startingNail))) {
-                startNail = parseInt(layer.startingNail);
+            if (stringLayer.settings.startingNail !== 'auto' && !isNaN(parseInt(stringLayer.settings.startingNail))) {
+                startNail = parseInt(stringLayer.settings.startingNail);
             }
+            console.log(stringLayer.settings.startingNail);
             // const startNail = 0;
             let lastNail = this.getNail(startNail);
             this.canvas.context.beginPath();
-            for (let i = 0; i < this.nails.length / 2; i++) {
-                if (layer.settings.pattern === 'default') {
+
+            let loopCount = this.nails.length / 2;
+            if (stringLayer.settings.loopCount > 0) {
+              loopCount = parseInt(stringLayer.settings.loopCount);
+            }
+
+
+            for (let i = 0; i < loopCount; i++) {
+                if (stringLayer.settings.pattern === 'aqua') {// Aqua
                     let nail = this.getNail(startNail + i);
                     this.canvas.context.moveTo(nail.x, nail.y);
 
                     let nail2 = this.getNail(startNail + i * 2 + this.nails.length / 2);
                     this.canvas.context.lineTo(nail2.x, nail2.y);
 
-                    layer.length += Math.sqrt(Math.pow(nail2.mmX - nail.mmX, 2) + Math.pow(nail2.mmY - nail.mmY, 2)) * 2;
+                    stringLayer.stats.length += Math.sqrt(Math.pow(nail2.mmX - nail.mmX, 2) + Math.pow(nail2.mmY - nail.mmY, 2)) * 2;
+                    stringLayer.stats.stepCount++;
+                } else if (stringLayer.settings.pattern === 'rectangle') {
+                    let nail = this.getNail(startNail + i);
+                    this.canvas.context.moveTo(nail.x, nail.y);
+
+                    let nail2 = this.getNail(startNail + 18 + 4 - i);
+                    this.canvas.context.lineTo(nail2.x, nail2.y);
+
+                    stringLayer.stats.length += Math.sqrt(Math.pow(nail2.mmX - nail.mmX, 2) + Math.pow(nail2.mmY - nail.mmY, 2)) * 2;
+                    stringLayer.stats.stepCount++;
                 } else {
-                    for (let step of layer.settings.patternSteps) {
+                    for (let step of stringLayer.settings.patternSteps) {
                         this.canvas.context.moveTo(lastNail.x, lastNail.y);
 
                         try {
@@ -273,16 +298,17 @@ export default {
 
                             if (nail) {
                                 this.canvas.context.lineTo(nail.x, nail.y);
-                                layer.length += Math.sqrt(Math.pow(nail.mmX - lastNail.mmX, 2) + Math.pow(nail.mmY - lastNail.mmY, 2)) * 2;
+                                stringLayer.stats.length += Math.sqrt(Math.pow(nail.mmX - lastNail.mmX, 2) + Math.pow(nail.mmY - lastNail.mmY, 2)) * 2;
+                              stringLayer.stats.stepCount++;
                                 lastNail = nail;
                             }
                         } catch {
-                            layer.length = 0;
+                            stringLayer.stats.length = 0;
                         }
                     }
                 }
             }
-            layer.length = Math.round(layer.length / 1000);// mm to m
+            stringLayer.stats.length = stringLayer.stats.length / 1000;// mm to m
             this.canvas.context.stroke();
         },
         modulo: function (x, y) {

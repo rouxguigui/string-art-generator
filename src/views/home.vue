@@ -169,10 +169,50 @@ export default {
                 return;
             }
             this.project = new Project();
-            for (let i = 0; i < 2; i++) {
-                this.project.addLayer();
-            }
             this.project.addNailsLayer();
+            this.project.addNailsLayer();
+            this.project.addNailsLayer();
+
+            this.project.nailsLayers[0].settings.nails.quantity = 33;
+            this.project.nailsLayers[0].settings.line = {
+              start: {
+                x: this.project.board.marginX,
+                y: this.project.board.height - this.project.board.marginY
+              },
+              end: {
+                x: this.project.board.marginX,
+                y: this.project.board.marginY
+              }
+            }
+          this.project.nailsLayers[1].settings.nails.quantity = 66;
+          this.project.nailsLayers[1].settings.line = {
+            start: {
+              x: this.project.board.marginX,
+              y: this.project.board.marginY
+            },
+            end: {
+              x: this.project.board.width - this.project.board.marginX,
+              y: this.project.board.height - this.project.board.marginY
+            }
+          }
+          this.project.nailsLayers[2].settings.nails.quantity = 33;
+            this.project.nailsLayers[2].settings.line = {
+              start: {
+                x: this.project.board.width - this.project.board.marginX,
+                y: this.project.board.marginY
+              },
+              end: {
+                x: this.project.board.width - this.project.board.marginX,
+                y: this.project.board.height - this.project.board.marginY
+              }
+            }
+
+          for (let i = 0; i < 3; i++) {
+            this.project.nailsLayers[i].generateNails();
+          }
+          for (let i = 0; i < 1; i++) {
+            this.project.addLayer();
+          }
         },
         openProject(project) {
             this.project = new Project();

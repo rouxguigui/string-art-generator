@@ -9,10 +9,14 @@ export default class StringLayer extends Layer {
             color: PaletteHelper.getDefaultColor(this.index),
             visible: true,
             startingNail: 'auto',
-            pattern: 'default',
+            loopCount: 'auto',
+            pattern: 'rectangle',
             patternSteps: []
         };
-        this.length = 0;
+        this.stats = {
+            length: 0,
+            stepCount: 0
+        };
     }
 
     convertToPx(size) {
