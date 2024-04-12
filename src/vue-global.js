@@ -69,6 +69,11 @@ Vue.mixin({
         isMobileLandscape() {
             return window.innerHeight < 576;
         }
+    },
+    methods: {
+        toPx(mm) {
+            return this.project.convertToPx(mm);
+        }
     }
 });
 

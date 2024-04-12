@@ -64,7 +64,7 @@
                     <b-select v-model.number="layerSelected.settings.startingNail">
                         <option value="auto">Automatique</option>
                         <option value="0">Clou 1</option>
-                        <option v-for="i in 150" :value="i" :key="'start-' + i">Clou {{ i + 1 }}</option>
+                        <option v-for="i in 500" :value="i" :key="'start-' + i">Clou {{ i + 1 }}</option>
                     </b-select>
                 </b-input-group>
             </b-form-group>
@@ -74,7 +74,7 @@
                     <b-select v-model.number="layerSelected.settings.loopCount">
                         <option value="auto">Automatique</option>
                         <option value="0">1x</option>
-                        <option v-for="i in 150" :value="i" :key="'loop-' + i">{{ i + 1 }}x</option>
+                        <option v-for="i in 500" :value="i" :key="'loop-' + i">{{ i + 1 }}x</option>
                     </b-select>
                 </b-input-group>
             </b-form-group>

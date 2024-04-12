@@ -14,13 +14,13 @@
             <b-form-group class="property">
                 <b-input-group>
                     <b-input-group-text>Quantité</b-input-group-text>
-                    <b-input type="number" min="1" max="999" step="10" v-model.number="layerSelected.settings.nails.quantity" @change="layerSelected.updateDistanceBetweenNails()"></b-input>
+                    <b-input type="number" min="1" max="999" step="10" v-model.number="layerSelected.settings.nails.quantity" @change="layerSelected.updateDistanceBetweenNails()"/>
                 </b-input-group>
             </b-form-group>
-            <b-form-group class="property" v-if="!layerSelected.settings.nails.autoDistance">
+            <b-form-group class="property">
                 <b-input-group>
                     <b-input-group-text title="Distance entre les clous">Dist. entre</b-input-group-text>
-                    <b-input type="number" min="1" max="999" step="1" v-model.number="layerSelected.settings.nails.distanceBetweenNails" @change="layerSelected.updateNailsQuantity()"></b-input>
+                    <b-input type="number" min="1" max="999" step="1" v-model.number="layerSelected.settings.nails.distanceBetweenNails" @change="layerSelected.updateNailsQuantity()" :readonly="layerSelected.settings.nails.autoDistance"/>
                     <b-input-group-text class="pl-2">{{ board.unit }}</b-input-group-text>
                 </b-input-group>
             </b-form-group>
