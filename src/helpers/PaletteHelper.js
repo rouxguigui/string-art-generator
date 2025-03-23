@@ -1,5 +1,7 @@
 export default class PaletteHelper {
-    static defaultPalette = [`#051f24`, `#1d758a`, `#036074`, `#5b93a3`, `#3587a3`, `#3aa1aa`, `#93cccc`, `#8eb1af`, `#88babf`];
+    static defaultPalette = [`#d11b1e`, `#ec2124`, `#cd5c04`, `#ecbd03`, `#8e9194`, `#eeeced`, `#93cccc`, `#8eb1af`, `#88babf`];
+    // aqua
+    // static defaultPalette = [`#051f24`, `#1d758a`, `#036074`, `#5b93a3`, `#3587a3`, `#3aa1aa`, `#93cccc`, `#8eb1af`, `#88babf`];
 
     static basicPalette = [
         "#ffffff", "#f3f3f3", "#efefef", "#d9d9d9", "#cccccc", "#b7b7b7", "#999999", "#666666", "#434343", "#000000",

@@ -15,16 +15,16 @@ export default class Project {
         }
 
         this.board = {
-            backgroundColor: '#ffffff',
-            width: 610,
-            height: 310,
+            backgroundColor: '#26262b',
+            width: 260,
+            height: 260,
             radius: 25,
-            resolution: 72,
+            resolution: 300,
             unit: `mm`,
             shape: `rectangle`,
-            marginX: 10,// to display borders around
-            marginY: 10,// to display borders around
-            nailsBetweenLayers: -1,// -1 for auto
+            marginX: 20,// to display borders around
+            marginY: 20,// to display borders around
+            nailsBetweenLayers: 0,// -1 for auto
             strings: {
                 width: 1
             }
@@ -48,14 +48,14 @@ export default class Project {
         return size / 10 * this.board.resolution / 2.54;// 2.54 for inch to cm, then cm to mm
     }
 
-    addLayer() {
-        let layer = new StringLayer(this, this.stringLayers.length);
+    addLayer(settings) {
+        let layer = new StringLayer(this, this.stringLayers.length, settings);
         this.stringLayers.push(layer);
         return layer;
     }
 
-    addNailsLayer() {
-        let nailsLayer = new NailsLayer(this, this.nailsLayers.length);
+    addNailsLayer(settings) {
+        let nailsLayer = new NailsLayer(this, this.nailsLayers.length, settings);
         this.nailsLayers.push(nailsLayer);
         return nailsLayer;
     }

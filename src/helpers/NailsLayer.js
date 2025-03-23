@@ -1,10 +1,10 @@
 import Layer from "@/helpers/Layer.js";
 import Nail from "@/helpers/Nail.js";
 import {evaluate} from "mathjs"
-import {roundTo1} from "@/utils.js";
+import {roundTo1, roundTo2, mergeDeep} from "@/utils.js";
 
 export default class NailsLayer extends Layer {
-    constructor(project, index) {
+    constructor(project, index, settings) {
         super(`nails`, project, index);
         this.name = `Clous ${this.index + 1}`;
         this.settings = {
@@ -45,7 +45,9 @@ export default class NailsLayer extends Layer {
                 end: {
                     x: this.project.board.width - this.project.board.marginX,
                     y: this.project.board.height - this.project.board.marginY
-                }
+                },
+                includesStartNail: true,
+                includesEndNail: true
             },
             cartesian: {
                 formula: `x*x/1000`,
@@ -59,6 +61,11 @@ export default class NailsLayer extends Layer {
                 maxT: Math.PI * 2
             }
         };
+
+        if (settings) {
+            this.settings = mergeDeep(this.settings, settings);
+        }
+
         this.nails = [];
         this.updateDistanceBetweenNails();
         this.generateNails();
@@ -80,13 +87,24 @@ export default class NailsLayer extends Layer {
         }
     }
 
-    updateDistanceBetweenNails() {
-        if (this.shape === `manual`) {
+    getNailQuantity() {
+        let quantity = this.settings.nails.quantity;
+
+        if (this.settings.shape === `line`) {
+            if (!this.settings.line.includesEndNail) {
+                quantity--;
+            }
+        }
+        return quantity;
+    }
+
+    updateDistanceBetweenNails(distanceUpdated = false) {
+        if (this.settings.shape === `manual`) {
             return false;
         }
-        if (this.settings.nails.autoDistance) {
+        if (this.settings.nails.autoDistance || distanceUpdated) {
             this.settings.positionBy = `quantity`;
-            this.settings.nails.distanceBetweenNails = roundTo1(this.getShapePerimeter() / this.settings.nails.quantity);
+            this.settings.nails.distanceBetweenNails = roundTo2(this.getShapePerimeter() / (this.getNailQuantity()));
             if (isNaN(this.settings.nails.distanceBetweenNails)) {
                 this.settings.nails.distanceBetweenNails = 3;
             }
@@ -95,7 +113,7 @@ export default class NailsLayer extends Layer {
     }
 
     updateNailsQuantity() {
-        if (this.shape === `manual`) {
+        if (this.settings.shape === `manual`) {
             return false;
         }
         this.settings.positionBy = `distance`;
@@ -160,14 +178,16 @@ export default class NailsLayer extends Layer {
                     this.settings.rectangle.origin.y + this.settings.rectangle.height);
             }
         } else if (this.settings.shape === `line`) {
-            for (i = 0; i < this.settings.nails.quantity; i++) {
-                progress = i / this.settings.nails.quantity;
+            const startIndex = this.settings.line.includesStartNail ? 0 : 1;
+
+            for (i = startIndex; i < this.getNailQuantity(); i++) {
+                progress = i / (this.settings.nails.quantity - 1);
                 this.addNail(this.settings.line.start.x * (1 - progress) + this.settings.line.end.x * progress,
                     this.settings.line.start.y * (1 - progress) + this.settings.line.end.y * progress);
             }
         } else if (this.settings.shape === `cartesian`) {
             for (i = 0; i < this.settings.nails.quantity; i++) {
-                progress = i / this.settings.nails.quantity;
+                progress = i / this.getNailQuantity();
                 x = this.settings.cartesian.minX * (1 - progress) + this.settings.cartesian.maxX * progress;
                 try {
                     formula = this.settings.cartesian.formula.replace(/x/gi, x);
@@ -181,7 +201,7 @@ export default class NailsLayer extends Layer {
             let r;
             for (i = 0; i < this.settings.nails.quantity; i++) {
                 try {
-                    progress = i / this.settings.nails.quantity;
+                    progress = i / this.getNailQuantity();
                     angle = this.settings.polar.minT * progress + this.settings.polar.maxT * (1 - progress);
                     formula = this.settings.polar.formula.replace(/t/gi, angle);
                     r = evaluate(formula);
@@ -223,7 +243,9 @@ export default class NailsLayer extends Layer {
                 canvas.context.fill();
             }
             if (projectSettings.nailNumbers) {
-                canvas.context.fillText(nail.index, nail.textX + 5, nail.textY + 5);
+                const fontSize = 20;
+                canvas.context.font = `${fontSize}pt arial`;
+                canvas.context.fillText(`(${this.index}, ${nail.index})`, nail.textX + fontSize, nail.textY + fontSize);
             }
             // index += 1;
         }

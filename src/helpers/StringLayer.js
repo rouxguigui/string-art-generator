@@ -1,8 +1,9 @@
 import Layer from "@/helpers/Layer.js";
 import PaletteHelper from "@/helpers/PaletteHelper.js";
+import {mergeDeep} from "../utils";
 
 export default class StringLayer extends Layer {
-    constructor(project, index) {
+    constructor(project, index, settings) {
         super(`string`, project, index);
         this.name = `Fil ${this.index + 1}`;
         this.settings = {
@@ -10,13 +11,17 @@ export default class StringLayer extends Layer {
             visible: true,
             startingNail: 'auto',
             loopCount: 'auto',
-            pattern: 'rectangle',
+            pattern: '2-lines',
             patternSteps: []
         };
         this.stats = {
             length: 0,
             stepCount: 0
         };
+
+        if (settings) {
+            this.settings = mergeDeep(this.settings, settings);
+        }
     }
 
     convertToPx(size) {

@@ -12,7 +12,7 @@ export default new Vuex.Store({
             showCenter: false,
             middleLines: false,
             diagonalLines: false,
-            nailNumbers: false,
+            nailNumbers: true,
             printMode: false
         },
         recordLayerPattern: false,

@@ -14,7 +14,7 @@
             <b-form-group class="property">
                 <b-input-group>
                     <b-input-group-text>Quantité</b-input-group-text>
-                    <b-input type="number" min="1" max="999" step="10" v-model.number="layerSelected.settings.nails.quantity" @change="layerSelected.updateDistanceBetweenNails()"></b-input>
+                    <b-input type="number" min="1" max="999" step="10" v-model.number="layerSelected.settings.nails.quantity" @change="layerSelected.updateDistanceBetweenNails(true)"></b-input>
                 </b-input-group>
             </b-form-group>
             <b-form-group class="property" v-if="!layerSelected.settings.nails.autoDistance">
@@ -161,6 +161,16 @@
                         <b-input type="number" min="1" max="9999" step="10" @change="update" v-model.number="layerSelected.settings.line.end.y"></b-input>
                     </b-input-group>
                 </b-form-group>
+              <b-form-group class="property">
+                  <b-checkbox @change="update" v-model="layerSelected.settings.line.includesStartNail">
+                      Inclure le clou de depart
+                  </b-checkbox>
+              </b-form-group>
+              <b-form-group class="property">
+                  <b-checkbox @change="update" v-model="layerSelected.settings.line.includesEndNail">
+                      Inclure le clou d'arrivée
+                  </b-checkbox>
+              </b-form-group>
             </template>
         </div>
     </div>
