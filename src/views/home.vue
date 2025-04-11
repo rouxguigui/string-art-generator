@@ -105,7 +105,7 @@ export default {
             zoom: 0.4,
             showPreviousSessionModal: false,
             previousProjectName: '',
-            layerSelected: false,
+            layerSelected: null,
             menuExtended: false,
             previousProjects: []
         }

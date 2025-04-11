@@ -1,3 +1,4 @@
+import Handle from "@/helpers/Handle.js";
 import Layer from "@/helpers/Layer.js";
 import Nail from "@/helpers/Nail.js";
 import {evaluate} from "mathjs"
@@ -7,6 +8,7 @@ export default class NailsLayer extends Layer {
     constructor(project, index) {
         super(`nails`, project, index);
         this.name = `Clous ${this.index + 1}`;
+        this.handles = {};
         this.settings = {
             shape: `line`,
             autoResize: true,
@@ -59,9 +61,25 @@ export default class NailsLayer extends Layer {
                 maxT: Math.PI * 2
             }
         };
+        this.setShape(this.settings.shape);
         this.nails = [];
         this.updateDistanceBetweenNails();
         this.generateNails();
+    }
+
+    setShape(shape) {
+        this.settings.shape = shape;
+        this.handles = {};
+        switch (this.settings.shape) {
+            case `line`:
+                this.handles.start = new Handle(this, this.project.board.marginX, this.project.board.marginY, `left`, `top`);
+                this.handles.end = new Handle(this, this.project.board.width - this.project.board.marginX, this.project.board.height - this.project.board.marginY, `left`, `top`);
+                break;
+            case `circle`:
+                this.handles.center = new Handle(this, this.project.board.marginX, 0, `center`, `center`);
+                this.handles.radius = new Handle(this, this.project.board.width / 2 - this.project.board.marginX, 0, `center`, `center`);
+                break;
+        }
     }
 
     convertToPx(size) {
@@ -237,32 +255,42 @@ export default class NailsLayer extends Layer {
         return this.project.getCenterY();
     }
 
-    drawOverlay(overlay) {
+    drawOverlay(overlay, drawShapes) {
         if (!this.visible) {
             return false;
         }
         overlay.globalAlpha = 1;
         overlay.lineWidth = 2;
-        let centerX = this.getCenterX();
-        let centerY = this.getCenterY();
+        // let centerX = this.getCenterX();
+        // let centerY = this.getCenterY();
 
-        switch (this.settings.shape) {
-            case `line`:
-                overlay.drawCross(this.convertToPx(this.settings.line.start.x), this.convertToPx(this.settings.line.start.y));
-                overlay.drawCross(this.convertToPx(this.settings.line.end.x), this.convertToPx(this.settings.line.end.y));
-                break;
-            case `circle`:
+        if (drawShapes || this.selected) {
+            for (let key in this.handles) {
+                const handle = this.handles[key];
+                if (this.selected) {
+                    overlay.drawRect(handle.getX(), handle.getY());
+                } else {
+                    overlay.drawCross(handle.getX(), handle.getY());
+                }
+            }
 
-                if (this.settings.circle.center.x !== `auto`) {
-                    centerX = this.settings.circle.center.x;
-                }
-                if (this.settings.circle.center.y !== `auto`) {
-                    centerY = this.settings.circle.center.y;
-                }
-                overlay.drawCross(this.convertToPx(centerX), this.convertToPx(centerY));
-                overlay.drawCross(this.convertToPx(centerX + this.settings.circle.radius * Math.cos(this.settings.circle.startingAngle)),
-                    this.convertToPx(centerY + this.settings.circle.radius * Math.sin(this.settings.circle.startingAngle)), 20);
-                break;
+            // switch (this.settings.shape) {
+            //     case `line`:
+            //         overlay.drawCross(this.convertToPx(this.settings.line.start.x), this.convertToPx(this.settings.line.start.y));
+            //         overlay.drawCross(this.convertToPx(this.settings.line.end.x), this.convertToPx(this.settings.line.end.y));
+            //         break;
+            //     case `circle`:
+            //         if (this.settings.circle.center.x !== `auto`) {
+            //             centerX = this.settings.circle.center.x;
+            //         }
+            //         if (this.settings.circle.center.y !== `auto`) {
+            //             centerY = this.settings.circle.center.y;
+            //         }
+            //         overlay.drawCross(this.convertToPx(centerX), this.convertToPx(centerY));
+            //         overlay.drawCross(this.convertToPx(centerX + this.settings.circle.radius * Math.cos(this.settings.circle.startingAngle)),
+            //             this.convertToPx(centerY + this.settings.circle.radius * Math.sin(this.settings.circle.startingAngle)), 20);
+            //         break;
+            // }
         }
     }
 }

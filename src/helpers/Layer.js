@@ -8,5 +8,6 @@ export default class Layer {
         this.id = generateGuid();
         this.name = `${this.index + 1}`;
         this.visible = true;
+        this.selected = false;
     }
 }

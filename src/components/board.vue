@@ -116,9 +116,7 @@ export default {
             this.overlay.context.font = '15pt Arial';
 
             for (let nailsLayer of this.nailsLayers) {
-                if (this.projectSettings.showShapes) {
-                    nailsLayer.drawOverlay(this.overlay);
-                }
+                nailsLayer.drawOverlay(this.overlay, this.projectSettings.showShapes);
             }
 
             // Margins
