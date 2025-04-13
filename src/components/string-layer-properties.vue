@@ -51,89 +51,86 @@
       </template>
     </div>
 
-    <div class="content" v-if="tabSelected === 'pattern'">
-      <b-form-group class="property">
-        <b-input-group>
-          <b-input-group-text>Type</b-input-group-text>
-          <b-select v-model="layerSelected.settings.pattern">
-            <option value="aqua">Aqua</option>
-            <option value="rectangle">Rectangle</option>
-            <option value="2-lines">2 lignes (gros carre)</option>
-            <option value="custom">Personnalisé</option>
-          </b-select>
-        </b-input-group>
-      </b-form-group>
-      <b-form-group class="property">
-        <b-input-group>
-          <b-input-group-text>1er clou</b-input-group-text>
-          <b-select v-model.number="layerSelected.settings.startingNail">
-            <option value="auto">Automatique</option>
-            <option value="0">Clou 1</option>
-            <option v-for="i in 300" :value="i" :key="'start-' + i">Clou {{ i + 1 }}</option>
-          </b-select>
-        </b-input-group>
-      </b-form-group>
-      <b-form-group class="property">
-        <b-input-group>
-          <b-input-group-text>Repetition</b-input-group-text>
-          <b-select v-model.number="layerSelected.settings.loopCount">
-            <option value="auto">Automatique</option>
-            <option value="0">1x</option>
-            <option v-for="i in 150" :value="i" :key="'loop-' + i">{{ i + 1 }}x</option>
-          </b-select>
-        </b-input-group>
-      </b-form-group>
-      <!--            <template v-if="layerSelected.pattern === 'custom'">-->
-      <b-form-group class="property">
-        <b-input-group>
-          <b-input-group-text>Actions</b-input-group-text>
-          <b-btn size="sm" :variant="recordLayerPattern ? 'danger' : 'default'" @click="startPatternRecord"
-                 :class="recordLayerPattern ? '' : 'text-danger'" title="Enregistrer un motif">⬤ <span
-              v-if="recordLayerPattern">Appliquer</span></b-btn>
-          <template v-if="!recordLayerPattern">
-            <b-btn size="sm" class="ml-2" @click="addPatternStep" variant="default" title="Ajouter une étape"><i
-                class="fas fa-plus-square"></i></b-btn>
-            <b-btn size="sm" class="ml-auto" variant="default" title="Appliquer ce motif à tous les calques"><i
-                class="fas fa-share-square"></i></b-btn>
-          </template>
-        </b-input-group>
-      </b-form-group>
-      <hr>
-      <h4>Étapes</h4>
-      <b-form-group class="property" v-for="(step, index) in layerSelected.settings.patternSteps"
-                    :key="'step-' + index">
+        <div class="content" v-if="tabSelected === 'pattern'">
+            <b-form-group class="property">
+                <b-input-group>
+                    <b-input-group-text>Type</b-input-group-text>
+                    <b-select v-model="layerSelected.settings.pattern">
+                        <option value="aqua">Aqua</option>
+                        <option value="rectangle">Rectangle</option>
+                      <option value="2-lines">2 lignes (gros carre)</option>
+                        <option value="custom">Personnalisé</option>
+                    </b-select>
+                </b-input-group>
+            </b-form-group>
+            <b-form-group class="property">
+                <b-input-group>
+                    <b-input-group-text>1er clou</b-input-group-text>
+                    <b-select v-model.number="layerSelected.settings.startingNail">
+                        <option value="auto">Automatique</option>
+                        <option value="0">Clou 1</option>
+                        <option v-for="i in 500" :value="i" :key="'start-' + i">Clou {{ i + 1 }}</option>
+                    </b-select>
+                </b-input-group>
+            </b-form-group>
+            <b-form-group class="property">
+                <b-input-group>
+                    <b-input-group-text>Repetition</b-input-group-text>
+                    <b-select v-model.number="layerSelected.settings.loopCount">
+                        <option value="auto">Automatique</option>
+                        <option value="0">1x</option>
+                        <option v-for="i in 500" :value="i" :key="'loop-' + i">{{ i + 1 }}x</option>
+                    </b-select>
+                </b-input-group>
+            </b-form-group>
+            <template v-if="layerSelected.pattern === 'custom'">
+                <b-form-group class="property">
+                    <b-input-group>
+                        <b-input-group-text>Actions</b-input-group-text>
+                        <b-btn size="sm" :variant="recordLayerPattern ? 'danger' : 'default'" @click="startPatternRecord"
+                               :class="recordLayerPattern ? '' : 'text-danger'" title="Enregistrer un motif">⬤ <span v-if="recordLayerPattern">Appliquer</span></b-btn>
+                        <template v-if="!recordLayerPattern">
+                            <b-btn size="sm" class="ml-2" @click="addPatternStep()" variant="default" title="Ajouter une étape"><i class="fas fa-plus-square"></i></b-btn>
+                            <b-btn size="sm" class="ml-auto" variant="default" title="Appliquer ce motif à tous les calques"><i class="fas fa-share-square"></i></b-btn>
+                        </template>
+                    </b-input-group>
+                </b-form-group>
+                <hr>
+              <h4>Étapes</h4>
+              <b-form-group class="property" v-for="(step, index) in layerSelected.settings.patternSteps"
+                            :key="'step-' + index">
 
 
-        <b-form-group>
-          <label>Étape {{ index + 1 }}</label>
-          <b-input-group v-if="recordLayerPattern">
-            <b-input-group-text>Clou {{ index + 1 }}</b-input-group-text>
-            <b-input v-model="step.nail"/>
-            <b-btn size="sm" class="ml-2" @click="removePatternStep(index)" variant="default"
-                   title="Enlever cette étape"><i class="fas fa-trash"></i></b-btn>
-          </b-input-group>
-          <template v-else>
+                <b-form-group>
+                  <label>Étape {{ index + 1 }}</label>
+                  <b-input-group v-if="recordLayerPattern">
+                    <b-input-group-text>Clou {{ index + 1 }}</b-input-group-text>
+                    <b-input v-model="step.nail"/>
+                    <b-btn size="sm" class="ml-2" @click="removePatternStep(index)" variant="default"
+                           title="Enlever cette étape"><i class="fas fa-trash"></i></b-btn>
+                  </b-input-group>
+                  <template v-else>
 
-            <b-input-group>
-              <b-input-group-text>Couche</b-input-group-text>
-              <b-input type="number" :min="0" :max="project.nailsLayers.length" v-model.number="step.layer"/>
-            </b-input-group>
-            <b-input-group>
-              <b-input-group-text>Clou</b-input-group-text>
-              <b-input type="number" :min="0" :max="99" v-model.number="step.nail"/>
-            </b-input-group>
-            <b-input-group>
-              <b-input-group-text>Delta</b-input-group-text>
-              <b-input type="number" :min="-99" :max="99" v-model.number="step.delta"/>
-              <b-btn size="sm" class="ml-2" @click="removePatternStep(index)" variant="default" title="Enlever cette étape">
-                <i class="fas fa-trash"/>
-              </b-btn>
-            </b-input-group>
-          </template>
-        </b-form-group>
-      </b-form-group>
-      <!--            </template>-->
-    </div>
+                    <b-input-group>
+                      <b-input-group-text>Couche</b-input-group-text>
+                      <b-input type="number" :min="0" :max="project.nailsLayers.length" v-model.number="step.layer"/>
+                    </b-input-group>
+                    <b-input-group>
+                      <b-input-group-text>Clou</b-input-group-text>
+                      <b-input type="number" :min="0" :max="99" v-model.number="step.nail"/>
+                    </b-input-group>
+                    <b-input-group>
+                      <b-input-group-text>Delta</b-input-group-text>
+                      <b-input type="number" :min="-99" :max="99" v-model.number="step.delta"/>
+                      <b-btn size="sm" class="ml-2" @click="removePatternStep(index)" variant="default" title="Enlever cette étape">
+                        <i class="fas fa-trash"/>
+                      </b-btn>
+                    </b-input-group>
+                  </template>
+                </b-form-group>
+              </b-form-group>
+            </template>
+        </div>
 
     <color-palette ref="colorPalette" v-if="layerSelected" v-model="layerSelected.settings.color"/>
   </div>

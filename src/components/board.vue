@@ -13,107 +13,114 @@
 import {CanvasHelper} from "@/helpers/CanvasHelper.js";
 
 export default {
-  name: 'board', // # fix board
-  props: {
-    zoom: {type: Number},
-    layerSelected: {}
-  },
-  data() {
-    return {
-      refreshRequired: true,
-      refreshOverlayRequired: true,
-      canvas: null,
-      drawing: false,
-      nailHover: null,
-      nailSelected: null,
-      nails: []
-    }
-  },
-  computed: {
-    boardClass() {
-      if (this.board.shape === `circle`) {
-        return `board-rounded`;
-      } else {
-        return ``;
-      }
+    name: 'board', // # fix board
+    props: {
+        zoom: {type: Number},
+        layerSelected: {}
     },
-    resolution() {
-      return this.board.resolution / 2.54;
-    },
-    centerX() {
-      return this.convertToPx(this.board.width) / 2;
-    },
-    centerY() {
-      return this.convertToPx(this.board.width) / 2;
-    }
-  },
-  mounted() {
-    this.canvas = new CanvasHelper(`board-canvas`);
-    this.overlay = new CanvasHelper(`overlay-canvas`);
-    this.redraw();
-  },
-  created() {
-    this.updateLoop();
-  },
-  methods: {
-    convertToPx(size) {
-      return this.project.convertToPx(size);
-    },
-    onMouseMove(evt) {
-      this.nailHover = this.findNailByMouseEvt(evt);
-      this.refreshOverlayRequired = true;
-    },
-    onClick(evt) {
-      const lastNailSelected = this.nailSelected;
-      this.nailSelected = this.findNailByMouseEvt(evt);
-      this.refreshOverlayRequired = true;
-      this.$emit('nail-selected', this.nailSelected, lastNailSelected);
-    },
-    findNailByMouseEvt(evt) {
-      return this.nails.find(n => {
-        let radius = this.convertToPx(n.radius + 2) / 20;
-        return n.x - radius < evt.offsetX / this.zoom && evt.offsetX / this.zoom < n.x + radius &&
-            n.y - radius < evt.offsetY / this.zoom && evt.offsetY / this.zoom < n.y + radius;
-      });
-    },
-    updateLoop() {
-      window.requestAnimationFrame(() => {
-        if (this.refreshRequired) {
-          this.redraw();
+    data() {
+        return {
+            refreshRequired: true,
+            refreshOverlayRequired: true,
+            canvas: null,
+            drawing: false,
+            nailHover: null,
+            nailSelected: null,
+          mouseCoord: {x: 0, y: 0},
+            nails: []
         }
-        if (this.refreshOverlayRequired) {
-          this.drawOverlay();
+    },
+    computed: {
+        boardClass() {
+          if (this.board.shape === `circle`) {
+              return `board-rounded`;
+          } else {
+              return ``;
+          }
+        },
+        resolution() {
+            return this.board.resolution / 2.54;
+        },
+        centerX() {
+            return this.convertToPx(this.board.width) / 2;
+        },
+        centerY() {
+            return this.convertToPx(this.board.width) / 2;
         }
+    },
+    mounted() {
+        this.canvas = new CanvasHelper(`board-canvas`);
+        this.overlay = new CanvasHelper(`overlay-canvas`);
+        this.redraw();
+    },
+    created() {
         this.updateLoop();
-      });
     },
-    redraw() {
-      if (this.drawing) {
-        return false;
-      }
-      this.drawing = true;
-      this.canvas.clear(this.board.backgroundColor);
-      this.generateNails();
-      this.drawGrid();
-      if (!this.projectSettings.printMode) {
-        this.drawLayers();
-      }
-      this.drawNails();
-      this.drawOverlay();
-      this.refreshRequired = false;
-      this.drawing = false;
-    },
-    drawOverlay() {
-      this.overlay.clear();
-      this.overlay.context.textAlign = 'center';
-      this.overlay.context.textBaseline = 'middle';
-      this.overlay.context.font = '15pt Arial';
+    methods: {
+        convertToPx(size) {
+           return this.project.convertToPx(size);
+        },
+      onMouseMove(evt) {
+        this.updateMouseCoord(evt);
+        this.nailHover = this.findNailByMouseEvt(evt);
+        this.refreshOverlayRequired = true;
+      },
+      onClick(evt) {
+        this.updateMouseCoord(evt);
+        const lastNailSelected = this.nailSelected;
+        this.nailSelected = this.findNailByMouseEvt(evt);
+        this.refreshOverlayRequired = true;
+        this.$emit('nail-selected', this.nailSelected, lastNailSelected);
+      },
+      updateMouseCoord(evt) {
+        this.mouseCoord.x = evt.offsetX / this.zoom;
+        this.mouseCoord.y = evt.offsetY / this.zoom;
+      },
+      findNailByMouseEvt() {
+        return this.nails.find(n => {
+          let radius = this.convertToPx(n.radius + 2);
+          return n.x - radius < this.mouseCoord.x && this.mouseCoord.x < n.x + radius &&
+              n.y - radius < this.mouseCoord.y && this.mouseCoord.y < n.y + radius;
+        });
+      },
+        updateLoop() {
+            window.requestAnimationFrame(() => {
+                if (this.refreshRequired) {
+                    this.redraw();
+                }
+                if (this.refreshOverlayRequired) {
+                    this.drawOverlay();
+                }
+                this.updateLoop();
+            });
+        },
+        redraw() {
+            if (this.drawing) {
+                return false;
+            }
+            this.drawing = true;
+            this.canvas.clear(this.board.backgroundColor);
+            this.generateNails();
+            this.drawGrid();
+            if (!this.projectSettings.printMode) {
+                this.drawLayers();
+            }
+            this.drawNails();
+            this.drawOverlay();
+            this.refreshRequired = false;
+            this.drawing = false;
+        },
+        drawOverlay() {
+            this.overlay.clear();
+            this.overlay.context.textAlign = 'center';
+            this.overlay.context.textBaseline = 'middle';
+            this.overlay.context.font = '15pt Arial';
 
-      for (let nailsLayer of this.nailsLayers) {
-        if (this.projectSettings.showShapes) {
-          nailsLayer.drawOverlay(this.overlay);
-        }
-      }
+            for (let nailsLayer of this.nailsLayers) {
+                if (this.projectSettings.showShapes) {
+                    nailsLayer.drawOverlay(this.overlay);
+                }
+            }
 
       // Margins
       if (this.projectSettings.showMargins) {
@@ -133,106 +140,103 @@ export default {
         this.overlay.context.setLineDash([]);
       }
 
-      // if (this.nailHover) {
-      //     this.overlay.context.fillStyle = '#c97413';
-      //     this.overlay.context.strokeStyle = '#c97413';
-      //     this.overlay.context.beginPath();
-      //     this.overlay.context.arc(this.nailHover.x, this.nailHover.y, (this.board.nailSettings.radius + 2) * this.resolution / 20, 0, Math.PI * 2);
-      //     this.overlay.context.fill();
-      //     this.overlay.context.fillText(this.nailHover.index + 1, this.nailHover.textX + 5, this.nailHover.textY + 5);
-      // }
-      // if (this.recordLayerPattern && this.layerSelected) {
-      //     this.overlay.context.fillStyle = 'red';
-      //     this.overlay.context.strokeStyle = 'red';
-      //     let index = 0;
-      //     for (let step of this.layerSelected.patternSteps) {
-      //         let nail = this.getNail(step.nail);
-      //         this.overlay.context.beginPath();
-      //         this.overlay.context.arc(nail.x, nail.y, (this.board.nailSettings.radius + 2) * this.resolution / 20, 0, Math.PI * 2);
-      //         this.overlay.context.fill();
-      //         this.overlay.context.fillText(index + 1, nail.textX + 5, nail.textY + 5);
-      //         index++;
-      //     }
-      // } else if (this.nailSelected) {
-      //     this.overlay.context.fillStyle = 'magenta';
-      //     this.overlay.context.strokeStyle = 'magenta';
-      //     this.overlay.context.beginPath();
-      //     this.overlay.context.arc(this.nailSelected.x, this.nailSelected.y, (this.board.nailSettings.radius + 2) * this.resolution / 20, 0, Math.PI * 2);
-      //     this.overlay.context.fill();
-      //     this.overlay.context.fillText(this.nailSelected.index + 1, this.nailSelected.textX + 5, this.nailSelected.textY + 5);
-      //
-      // }
-      this.refreshOverlayRequired = false;
-    },
-    generateNails() {
-      this.nails = [];
-      for (let nailsLayer of this.nailsLayers) {
-        this.nails = this.nails.concat(nailsLayer.getNails());
-      }
-    },
-    drawGrid() {
-      // this.canvas.context.strokeStyle = `#bbb`;
-      // this.canvas.context.lineWidth = 1;
-      // // Draw cross vertically and horizontally
-      // if (this.$store.state.settings.middleLines) {
-      //     this.canvas.context.beginPath();
-      //     this.canvas.context.moveTo(0, this.centerY);
-      //     this.canvas.context.lineTo(this.board.width * this.resolution, this.centerY);
-      //     this.canvas.context.stroke();
-      //     this.canvas.context.beginPath();
-      //     this.canvas.context.moveTo(this.centerX, 0);
-      //     this.canvas.context.lineTo(this.centerX, this.board.height * this.resolution);
-      //     this.canvas.context.stroke();
-      // }
-      //
-      // // Draw cross diagonal
-      // if (this.$store.state.settings.diagonalLines) {
-      //     this.canvas.context.beginPath();
-      //     this.canvas.context.moveTo(0, 0);
-      //     this.canvas.context.lineTo(this.board.width * this.resolution, this.board.height * this.resolution);
-      //     this.canvas.context.stroke();
-      //     this.canvas.context.beginPath();
-      //     this.canvas.context.moveTo(0, this.board.height * this.resolution);
-      //     this.canvas.context.lineTo(this.board.width * this.resolution, 0);
-      //     this.canvas.context.stroke();
-      // }
-      //
-      // if (this.projectSettings.printMode) {
-      //     this.canvas.context.strokeStyle = `#000`;
-      //     this.canvas.context.beginPath();
-      //     this.canvas.context.moveTo(this.centerX - 10, this.centerY);
-      //     this.canvas.context.lineTo(this.centerX + 10, this.centerY);
-      //     this.canvas.context.moveTo(this.centerX, this.centerY - 10);
-      //     this.canvas.context.lineTo(this.centerX, this.centerY + 10);
-      //     this.canvas.context.stroke();
-      // }
-    },
-    drawNails() {
-      this.canvas.context.textAlign = 'center';
-      this.canvas.context.textBaseline = 'middle';
-      for (let nailsLayer of this.nailsLayers) {
-        nailsLayer.drawNails(this.canvas, this.projectSettings);
-      }
-      // for (let nailsLayer of this.nailsLayers) {
-      //   nailsLayer.drawNails(this.canvas, this.projectSettings);
-      // }
-    },
-    drawLayers() {
-      for (let i = this.stringLayers.length - 1; i >= 0; i--) {
-        const layer = this.stringLayers[i];
-        this.drawLayer(i, layer);
-      }
+          if (this.mouseCoord.x > 0 && this.mouseCoord.y > 0) {
+            this.overlay.context.beginPath();
+            this.overlay.context.arc(this.mouseCoord.x, this.mouseCoord.y, 4, 0, Math.PI * 2);
+            this.overlay.context.fill();
+          }
 
-      // let index = 0;
-      // for (let layer of this.stringLayers) {
-      //   this.drawLayer(index, layer);
-      //   index++;
-      // }
-    },
-    drawLayer(index, stringLayer) {
-      if (!stringLayer.visible || this.recordLayerPattern) {
-        return false;
-      }
+          if (this.nailHover) {
+            this.overlay.context.fillStyle = '#c97413';
+            this.overlay.context.strokeStyle = '#c97413';
+            this.overlay.context.beginPath();
+            this.overlay.context.arc(this.nailHover.x, this.nailHover.y, this.toPx(this.nailHover.radius + 2), 0, Math.PI * 2);
+            this.overlay.context.fill();
+            this.overlay.context.fillText(this.nailHover.index + 1, this.nailHover.textX + 5, this.nailHover.textY + 5);
+          }
+          if (this.recordLayerPattern && this.layerSelected) {
+            this.overlay.context.fillStyle = 'red';
+            this.overlay.context.strokeStyle = 'red';
+            let index = 0;
+            for (let step of this.layerSelected.patternSteps) {
+              let nail = this.getNail(step.nail);
+              this.overlay.context.beginPath();
+              this.overlay.context.arc(nail.x, nail.y, this.toPx(nail.radius + 2), 0, Math.PI * 2);
+              this.overlay.context.fill();
+              this.overlay.context.fillText(index + 1, nail.textX + 5, nail.textY + 5);
+              index++;
+            }
+          } else if (this.nailSelected) {
+            this.overlay.context.fillStyle = 'magenta';
+            this.overlay.context.strokeStyle = 'magenta';
+            this.overlay.context.beginPath();
+            this.overlay.context.arc(this.nailSelected.x, this.nailSelected.y, this.toPx(this.nailSelected.radius + 2), 0, Math.PI * 2);
+            this.overlay.context.fill();
+            this.overlay.context.fillText(this.nailSelected.index + 1, this.nailSelected.textX + 5, this.nailSelected.textY + 5);
+
+          }
+          this.refreshOverlayRequired = false;
+        },
+        generateNails() {
+            this.nails = [];
+            for (let nailsLayer of this.nailsLayers) {
+                this.nails = this.nails.concat(nailsLayer.getNails());
+            }
+        },
+        drawGrid() {
+            // this.canvas.context.strokeStyle = `#bbb`;
+            // this.canvas.context.lineWidth = 1;
+            // // Draw cross vertically and horizontally
+            // if (this.$store.state.settings.middleLines) {
+            //     this.canvas.context.beginPath();
+            //     this.canvas.context.moveTo(0, this.centerY);
+            //     this.canvas.context.lineTo(this.board.width * this.resolution, this.centerY);
+            //     this.canvas.context.stroke();
+            //     this.canvas.context.beginPath();
+            //     this.canvas.context.moveTo(this.centerX, 0);
+            //     this.canvas.context.lineTo(this.centerX, this.board.height * this.resolution);
+            //     this.canvas.context.stroke();
+            // }
+            //
+            // // Draw cross diagonal
+            // if (this.$store.state.settings.diagonalLines) {
+            //     this.canvas.context.beginPath();
+            //     this.canvas.context.moveTo(0, 0);
+            //     this.canvas.context.lineTo(this.board.width * this.resolution, this.board.height * this.resolution);
+            //     this.canvas.context.stroke();
+            //     this.canvas.context.beginPath();
+            //     this.canvas.context.moveTo(0, this.board.height * this.resolution);
+            //     this.canvas.context.lineTo(this.board.width * this.resolution, 0);
+            //     this.canvas.context.stroke();
+            // }
+            //
+            // if (this.projectSettings.printMode) {
+            //     this.canvas.context.strokeStyle = `#000`;
+            //     this.canvas.context.beginPath();
+            //     this.canvas.context.moveTo(this.centerX - 10, this.centerY);
+            //     this.canvas.context.lineTo(this.centerX + 10, this.centerY);
+            //     this.canvas.context.moveTo(this.centerX, this.centerY - 10);
+            //     this.canvas.context.lineTo(this.centerX, this.centerY + 10);
+            //     this.canvas.context.stroke();
+            // }
+        },
+        drawNails() {
+            this.canvas.context.textAlign = 'center';
+            this.canvas.context.textBaseline = 'middle';
+            for (let nailsLayer of this.nailsLayers) {
+                nailsLayer.drawNails(this.canvas, this.projectSettings);
+            }
+        },
+        drawLayers() {
+          for (let i = this.stringLayers.length - 1; i >= 0; i--) {
+            const layer = this.stringLayers[i];
+            this.drawLayer(i, layer);
+          }
+        },
+        drawLayer(index, stringLayer) {
+            if (!stringLayer.visible || this.recordLayerPattern) {
+                return false;
+            }
 
       this.canvas.context.strokeStyle = stringLayer.settings.color;
       this.canvas.context.lineWidth = this.board.strings.width;

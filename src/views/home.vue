@@ -99,301 +99,301 @@ import MainPage from "../components/main-page";
 import swal from 'sweetalert2'
 
 export default {
-  name: "home",
-  components: {PropertiesPanel, Board, MainPage},
-  data() {
-    return {
-      zoom: 0.4,
-      showPreviousSessionModal: false,
-      previousProjectName: '',
-      layerSelected: false,
-      menuExtended: false,
-      previousProjects: []
-    }
-  },
-  mounted() {
-    this.loadRecentProjects();
-  },
-  methods: {
-    onNailSelected(nail) {
-      if (nail && this.recordLayerPattern && this.layerSelected) {
-        this.layerSelected.patternSteps.push({
-          nail: nail.index,
-          delta: 0
-        });
-        this.$refs.board.refreshScreenAndOverlay();
-      }
+    name: "home",
+    components: {PropertiesPanel, Board, MainPage},
+    data() {
+        return {
+            zoom: 0.4,
+            showPreviousSessionModal: false,
+            previousProjectName: '',
+            layerSelected: false,
+            menuExtended: false,
+            previousProjects: []
+        }
     },
-    onWheelChanged(evt) {
-      if (!evt.ctrlKey) {
-        return true;
-      }
-      if (evt.deltaY > 0) {
-        this.setZoom(-0.1);
-      } else {
-        this.setZoom(0.1);
-      }
-      evt.preventDefault();
+    mounted() {
+        this.loadRecentProjects();
     },
-    loadRecentProjects() {
-      let projects = localStorage.getItem('projects');
-      if (projects) {
-        projects = JSON.parse(projects);
-        this.previousProjects = projects;
-      }
-    },
-    async askSaveConfirmationBefore() {
-      if (this.project) {
-        const result = await swal.fire({
-          title: "Enregistrer avant ?",
-          text: `Voulez-vous enregistrer ${this.project.name} avant ?`,
-          showCancelButton: true,
-          showDenyButton: true,
-          showCloseButton: true,
-          cancelButtonText: `Annuler`,
-          denyButtonText: `Ne pas enregistrer`,
-          confirmButtonText: `Enregistrer`
-        });
-        if (result.isConfirmed) {
-          await this.saveOrSaveAs();
-          return true;
-        } else if (result.isDismissed) {
-          return false;
-        }
-      } else {
-        return true;
-      }
-    },
-    async newProject() {
-      let result = await this.askSaveConfirmationBefore();
-      if (result === false) {
-        return;
-      }
-      this.project = new Project();
-
-      // Super carré
-      this.project.board.shape = `rectangle`;
-      this.project.board.marginX = 20;// to display borders around
-      this.project.board.marginY = 20;// to display borders around
-      this.project.board.width = 260;
-      this.project.board.height = 260;
-
-      this.project.addNailsLayer({
-        name: `Rectangle`,
-        shape: 'rectangle',
-        nails: {
-          quantity: 88
-        }
-      });
-      this.project.addNailsLayer({
-        name: `Ligne milieu vertical`,
-        nails: {
-          quantity: 23
+    methods: {
+        onNailSelected(nail) {
+            if (nail && this.recordLayerPattern && this.layerSelected) {
+                this.layerSelected.patternSteps.push({
+                    nail: nail.index,
+                    delta: 0
+                });
+                this.$refs.board.refreshScreenAndOverlay();
+            }
         },
-        line: {
-          start: {
-            x: this.project.board.width / 2,
-            y: this.project.board.height - this.project.board.marginY
-          },
-          end: {
-            x: this.project.board.width / 2,
-            y: this.project.board.marginY
-          },
-          includesEndNail: true
-        }
-      });
-
-      // Ligne Milieu Droite = 10 clous
-      this.project.addNailsLayer({
-        name: `Ligne milieu droite`,
-        shape: `line`,
-        nails: {
-          quantity: 12
+        onWheelChanged(evt) {
+            if (!evt.ctrlKey) {
+                return true;
+            }
+            if (evt.deltaY > 0) {
+                this.setZoom(-0.1);
+            } else {
+                this.setZoom(0.1);
+            }
+            evt.preventDefault();
         },
-        line: {
-          start: {
-            x: this.project.board.width / 2,
-            y: this.project.board.height / 2,
-          },
-          end: {
-            x: this.project.board.width - this.project.board.marginX,
-            y: this.project.board.height / 2,
-          },
-          includesStartNail: false,
-          includesEndNail: false
-        }
-      });
-
-      // Ligne Milieu Gauche = 10 clous
-      this.project.addNailsLayer({
-        name: `Ligne milieu gauche`,
-        shape: `line`,
-        nails: {
-          quantity: 12
+        loadRecentProjects() {
+            let projects = localStorage.getItem('projects');
+            if (projects) {
+                projects = JSON.parse(projects);
+                this.previousProjects = projects;
+            }
         },
-        line: {
-          start: {
-            x: this.project.board.marginX,
-            y: this.project.board.height / 2,
-          },
-          end: {
-            x: this.project.board.width / 2,
-            y: this.project.board.height / 2,
-          },
-          includesStartNail: false,
-          includesEndNail: false
-        }
-      });
-
-      // Ligne Diagonale Haut Droite = 14 clous
-      this.project.addNailsLayer({
-        name: `Diagonale Haut Droite`,
-        shape: `line`,
-        nails: {
-          quantity: 16
+        async askSaveConfirmationBefore() {
+            if (this.project) {
+                const result = await swal.fire({
+                    title: "Enregistrer avant ?",
+                    text: `Voulez-vous enregistrer ${this.project.name} avant ?`,
+                    showCancelButton: true,
+                    showDenyButton: true,
+                    showCloseButton: true,
+                    cancelButtonText: `Annuler`,
+                    denyButtonText: `Ne pas enregistrer`,
+                    confirmButtonText: `Enregistrer`
+                });
+                if (result.isConfirmed) {
+                    await this.saveOrSaveAs();
+                    return true;
+                } else if (result.isDismissed) {
+                    return false;
+                }
+            } else {
+                return true;
+            }
         },
-        line: {
-          start: {
-            x: this.project.board.width / 2,
-            y: this.project.board.marginY
-          },
-          end: {
-            x: this.project.board.width - this.project.board.marginX,
-            y: this.project.board.height / 2,
-          },
-          includesStartNail: false,
-          includesEndNail: false
-        }
-      });
+        async newProject() {
+            let result = await this.askSaveConfirmationBefore();
+            if (result === false) {
+                return;
+            }
+            this.project = new Project();
 
-      // Ligne Diagonale Bas Droite = 14 clous
-      this.project.addNailsLayer({
-        name: `Diagonale Bas Droite`,
-        shape: `line`,
-        nails: {
-          quantity: 16
-        },
-        line: {
-          start: {
-            x: this.project.board.width - this.project.board.marginX,
-            y: this.project.board.height / 2,
+          // Super carré
+          this.project.board.shape = `rectangle`;
+          this.project.board.marginX = 20;// to display borders around
+          this.project.board.marginY = 20;// to display borders around
+          this.project.board.width = 260;
+          this.project.board.height = 260;
 
-          },
-          end: {
-            x: this.project.board.width / 2,
-            y: this.project.board.height - this.project.board.marginY,
-          },
-          includesStartNail: false,
-          includesEndNail: false
-        }
-      });
+          this.project.addNailsLayer({
+            name: `Rectangle`,
+            shape: 'rectangle',
+            nails: {
+              quantity: 88
+            }
+          });
+          this.project.addNailsLayer({
+            name: `Ligne milieu vertical`,
+            nails: {
+              quantity: 23
+            },
+            line: {
+              start: {
+                x: this.project.board.width / 2,
+                y: this.project.board.height - this.project.board.marginY
+              },
+              end: {
+                x: this.project.board.width / 2,
+                y: this.project.board.marginY
+              },
+              includesEndNail: true
+            }
+          });
 
-      // Ligne Diagonale Bas Gauche = 14 clous
-      this.project.addNailsLayer({
-        name: `Diagonale Bas Gauche`,
-        shape: `line`,
-        nails: {
-          quantity: 16
-        },
-        line: {
-          start: {
-            x: this.project.board.width / 2,
-            y: this.project.board.height - this.project.board.marginY,
+          // Ligne Milieu Droite = 10 clous
+          this.project.addNailsLayer({
+            name: `Ligne milieu droite`,
+            shape: `line`,
+            nails: {
+              quantity: 12
+            },
+            line: {
+              start: {
+                x: this.project.board.width / 2,
+                y: this.project.board.height / 2,
+              },
+              end: {
+                x: this.project.board.width - this.project.board.marginX,
+                y: this.project.board.height / 2,
+              },
+              includesStartNail: false,
+              includesEndNail: false
+            }
+          });
 
-          },
-          end: {
-            x: this.project.board.marginX,
-            y: this.project.board.height / 2,
-          },
-          includesStartNail: false,
-          includesEndNail: false
-        }
-      });
+          // Ligne Milieu Gauche = 10 clous
+          this.project.addNailsLayer({
+            name: `Ligne milieu gauche`,
+            shape: `line`,
+            nails: {
+              quantity: 12
+            },
+            line: {
+              start: {
+                x: this.project.board.marginX,
+                y: this.project.board.height / 2,
+              },
+              end: {
+                x: this.project.board.width / 2,
+                y: this.project.board.height / 2,
+              },
+              includesStartNail: false,
+              includesEndNail: false
+            }
+          });
 
-      // Ligne Diagonale Haut Gauche = 14 clous
-      this.project.addNailsLayer({
-        name: `Diagonale Haut Gauche`,
-        shape: `line`,
-        nails: {
-          quantity: 16
-        },
-        line: {
-          start: {
-            x: this.project.board.marginX,
-            y: this.project.board.height / 2,
+          // Ligne Diagonale Haut Droite = 14 clous
+          this.project.addNailsLayer({
+            name: `Diagonale Haut Droite`,
+            shape: `line`,
+            nails: {
+              quantity: 16
+            },
+            line: {
+              start: {
+                x: this.project.board.width / 2,
+                y: this.project.board.marginY
+              },
+              end: {
+                x: this.project.board.width - this.project.board.marginX,
+                y: this.project.board.height / 2,
+              },
+              includesStartNail: false,
+              includesEndNail: false
+            }
+          });
 
-          },
-          end: {
-            x: this.project.board.width / 2,
-            y: this.project.board.marginY
-          },
-          includesStartNail: false,
-          includesEndNail: false
-        }
-      });
+          // Ligne Diagonale Bas Droite = 14 clous
+          this.project.addNailsLayer({
+            name: `Diagonale Bas Droite`,
+            shape: `line`,
+            nails: {
+              quantity: 16
+            },
+            line: {
+              start: {
+                x: this.project.board.width - this.project.board.marginX,
+                y: this.project.board.height / 2,
 
-        this.project.addLayer({
-          // name: `Fil 1`,
-          type: `custom`,
-          patternSteps: [
-            {layer: 3, nail: 0, delta: 1},
-            {layer: 1, nail: 11, delta: 1}
-          ]
-        });
+              },
+              end: {
+                x: this.project.board.width / 2,
+                y: this.project.board.height - this.project.board.marginY,
+              },
+              includesStartNail: false,
+              includesEndNail: false
+            }
+          });
 
-        this.project.addLayer({
-          // name: `Fil 2`,
-          type: `custom`,
-          patternSteps: [
-            {layer: 2, nail: 9, delta: -1},
-            {layer: 1, nail: 11, delta: -1}
-          ]
-        });
+          // Ligne Diagonale Bas Gauche = 14 clous
+          this.project.addNailsLayer({
+            name: `Diagonale Bas Gauche`,
+            shape: `line`,
+            nails: {
+              quantity: 16
+            },
+            line: {
+              start: {
+                x: this.project.board.width / 2,
+                y: this.project.board.height - this.project.board.marginY,
 
-      this.project.addLayer({
-        // name: `Fil 3`,
-        type: `custom`,
-        patternSteps: [
-          {layer: 2, nail: 9, delta: -1},
-          {layer: 1, nail: 11, delta: 1}
-        ]
-      });
+              },
+              end: {
+                x: this.project.board.marginX,
+                y: this.project.board.height / 2,
+              },
+              includesStartNail: false,
+              includesEndNail: false
+            }
+          });
 
-      this.project.addLayer({
-        // name: `Fil 4`,
-        type: `custom`,
-        patternSteps: [
-          {layer: 3, nail: 0, delta: 1},
-          {layer: 1, nail: 11, delta: -1}
-        ]
-      });
+          // Ligne Diagonale Haut Gauche = 14 clous
+          this.project.addNailsLayer({
+            name: `Diagonale Haut Gauche`,
+            shape: `line`,
+            nails: {
+              quantity: 16
+            },
+            line: {
+              start: {
+                x: this.project.board.marginX,
+                y: this.project.board.height / 2,
 
-      this.project.addLayer({
-        // name: `Fil 5`,
-        type: `custom`,
-        patternSteps: [
-          {layer: 0, nail: 66, delta: -2},
-          {layer: 0, nail: 0, delta: 2}
-        ]
-      });
+              },
+              end: {
+                x: this.project.board.width / 2,
+                y: this.project.board.marginY
+              },
+              includesStartNail: false,
+              includesEndNail: false
+            }
+          });
 
-      this.project.addLayer({
-        // name: `Fil 6`,
-        type: `custom`,
-        patternSteps: [
-          {layer: 0, nail: 22, delta: -2},
-          {layer: 7, nail: 10, delta: -1}
-        ]
-      });
+          this.project.addLayer({
+            // name: `Fil 1`,
+            type: `custom`,
+            patternSteps: [
+              {layer: 3, nail: 0, delta: 1},
+              {layer: 1, nail: 11, delta: 1}
+            ]
+          });
 
-      this.project.addLayer({
-        // name: `Fil 7`,
-        type: `custom`,
-        patternSteps: [
-          {layer: 0, nail: 66, delta: -2},
-          {layer: 7, nail: 3, delta: 1}
-        ]
-      });
+          this.project.addLayer({
+            // name: `Fil 2`,
+            type: `custom`,
+            patternSteps: [
+              {layer: 2, nail: 9, delta: -1},
+              {layer: 1, nail: 11, delta: -1}
+            ]
+          });
+
+          this.project.addLayer({
+            // name: `Fil 3`,
+            type: `custom`,
+            patternSteps: [
+              {layer: 2, nail: 9, delta: -1},
+              {layer: 1, nail: 11, delta: 1}
+            ]
+          });
+
+          this.project.addLayer({
+            // name: `Fil 4`,
+            type: `custom`,
+            patternSteps: [
+              {layer: 3, nail: 0, delta: 1},
+              {layer: 1, nail: 11, delta: -1}
+            ]
+          });
+
+          this.project.addLayer({
+            // name: `Fil 5`,
+            type: `custom`,
+            patternSteps: [
+              {layer: 0, nail: 66, delta: -2},
+              {layer: 0, nail: 0, delta: 2}
+            ]
+          });
+
+          this.project.addLayer({
+            // name: `Fil 6`,
+            type: `custom`,
+            patternSteps: [
+              {layer: 0, nail: 22, delta: -2},
+              {layer: 7, nail: 10, delta: -1}
+            ]
+          });
+
+          this.project.addLayer({
+            // name: `Fil 7`,
+            type: `custom`,
+            patternSteps: [
+              {layer: 0, nail: 66, delta: -2},
+              {layer: 7, nail: 3, delta: 1}
+            ]
+          });
 
 
       //Hardcodé le pattern rectangle

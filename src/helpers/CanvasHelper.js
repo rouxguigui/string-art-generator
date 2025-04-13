@@ -38,4 +38,13 @@ export class CanvasHelper {
         this.context.lineTo(x, y + crossWidth);
         this.context.stroke();
     }
+
+    drawRect(x, y, rectSize = 4) {
+        this.context.beginPath();
+        this.context.moveTo(x - rectSize, y - rectSize);
+        this.context.lineTo(x + rectSize, y - rectSize);
+        this.context.moveTo(x + rectSize, y + rectSize);
+        this.context.lineTo(x - rectSize, y + rectSize);
+        this.context.stroke();
+    }
 }

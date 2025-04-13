@@ -14,11 +14,11 @@
         <div id="layers" class="properties-group">
             <h4>Calques</h4>
             <div class="content">
-                <div class="layer" @click="layerSelected = null" :class="{ 'active': !layerSelected }">
+                <div class="layer" @click="unselectLayer()" :class="{ 'active': !layerSelected }">
                     <div class="visibility"><i class="fas fa-chess-board"></i></div>
                     <div class="name">Plateau</div>
                 </div>
-                <div class="layer" v-for="layer in nailsLayers" :key="layer.id" @click="layerSelected = layer"
+                <div class="layer" v-for="layer in nailsLayers" :key="layer.id" @click="selectLayer(layer)"
                            :class="{ 'active': layerSelected === layer }">
                     <div v-if="isMobile || isMobileLandscape" class="handle">
                         <i class="fas fa-bars mr-2"></i>
@@ -35,7 +35,7 @@
                     </div>
                 </div>
                 <draggable v-model="stringLayers" :handle="isMobile || isMobileLandscape ? '.handle': null" ghost-class="list-item-ghost" drag-class="list-item-drag" animation="150">
-                    <div class="layer" v-for="layer in stringLayers" :key="layer.id" @click="layerSelected = layer"
+                    <div class="layer" v-for="layer in stringLayers" :key="layer.id" @click="selectLayer(layer)"
                          :class="{ 'active': layerSelected === layer }">
                         <div v-if="isMobile || isMobileLandscape" class="handle">
                             <i class="fas fa-bars mr-2"></i>
@@ -123,18 +123,31 @@ export default {
         },
         addLayer() {
             let layer = this.project.addLayer();
-            this.layerSelected = layer;
+            this.selectLayer(layer);
         },
         addNailsLayer() {
             let layer = this.project.addNailsLayer();
+            this.selectLayer(layer);
+        },
+        selectLayer(layer) {
+            if (this.layerSelected) {
+                this.layerSelected.selected = false;
+            }
             this.layerSelected = layer;
+            this.layerSelected.selected = true;
+        },
+        unselectLayer() {
+            if (this.layerSelected) {
+                this.layerSelected.selected = false;
+                this.layerSelected = null;
+            }
         },
         removeLayer() {
             if (!this.layerSelected) {
                 return false;
             }
             this.project.removeLayer(this.layerSelected);
-            this.layerSelected = null;
+            this.unselectLayer();
         },
         roundTo1(value) {
             return Math.round(value * 10) / 10;
