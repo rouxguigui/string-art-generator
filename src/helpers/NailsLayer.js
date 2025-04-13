@@ -63,6 +63,10 @@ export default class NailsLayer extends Layer {
         };
 
         if (settings) {
+            if (settings.name) {
+                this.name = settings.name;
+                delete settings.name;
+            }
             this.settings = mergeDeep(this.settings, settings);
         }
 

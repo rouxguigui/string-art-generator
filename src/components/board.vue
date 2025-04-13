@@ -346,7 +346,9 @@ export default {
               // }
 
               if (nail) {
-                this.canvas.context.lineTo(nail.x, nail.y);
+                if (lastNail) {
+                  this.canvas.context.lineTo(nail.x, nail.y);
+                }
                 stringLayer.stats.length += Math.sqrt(Math.pow(nail.mmX - lastNail.mmX, 2) + Math.pow(nail.mmY - lastNail.mmY, 2)) * 2;
                 stringLayer.stats.stepCount++;
                 lastNail = nail;

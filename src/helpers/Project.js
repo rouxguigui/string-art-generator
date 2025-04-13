@@ -26,7 +26,7 @@ export default class Project {
             marginY: 20,// to display borders around
             nailsBetweenLayers: 0,// -1 for auto
             strings: {
-                width: 1
+                width: 3
             }
         };
 

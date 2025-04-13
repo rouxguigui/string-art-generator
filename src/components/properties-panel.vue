@@ -28,7 +28,7 @@
                         <i class="fas fa-eye-slash fa-fw" v-else></i>
                     </div>
                     <div class="name">
-                        {{ layer.name }}
+                        {{ layer.name }} ({{layer.index}})
                     </div>
                     <div class="color icon">
                         <i class="fas fa-map-pin fa-fw" :style="{color: layer.settings.nails.color}"/>
